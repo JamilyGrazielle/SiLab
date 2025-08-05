@@ -493,25 +493,25 @@ main.principal03 h1 {
   justify-content: space-between; 
   align-items: center;
   margin-bottom: 2em;
+  padding-right: 20px;
 }
 
 .form-pesquisa {
   display: flex;
   align-items: center;
-  gap: 100px;
-}
-
-.form-pesquisa fieldset {
-  border: none;
-  padding: 0;
-  margin: 0;
+  gap: 5px;
 }
 
 .form-pesquisa input {
-  padding: 10px;
+  padding: 8px;
   border: 1px solid #ccc;
   border-radius: 6px;
   min-width: 300px;
+}
+
+.form-pesquisa input:focus {
+  border: 1px solid #4CAF50;
+  outline: none; 
 }
 
 .botao-pesquisar, .botao-adicionar {
@@ -530,14 +530,27 @@ main.principal03 h1 {
   background-color: #38A169; 
 }
 
+.botao-pesquisar:hover {
+  background-color: #219e5b;
+  border-color: #2D3748;
+  transform: translateY(-2px); 
+}
+
 .botao-adicionar {
   background-color: #4CAF50; 
+}
+
+.botao-adicionar:hover {
+  background-color: #2bad2f;
+  border-color: #2D3748;
+  transform: translateY(-2px); 
 }
 
 .tabela-lab {
   width: 100%;
   border-collapse: collapse;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 50px;
 }
 
 .tabela-lab thead {
@@ -548,11 +561,17 @@ main.principal03 h1 {
 .tabela-lab th, .tabela-lab td {
   padding: 15px;
   text-align: left;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 2px solid #ddd;
+  border-right: 2px solid #ddd; 
 }
 
 .tabela-lab tbody tr:hover {
   background-color: #f1f1f1;
+}
+
+.tabela-dados th:last-child,
+.tabela-dados td:last-child {
+  border-right: none;
 }
 
 .acoes {
@@ -588,4 +607,3 @@ main.principal03 h1 {
 .botao-excluir i {
   color: #e74c3c; 
 }
-
