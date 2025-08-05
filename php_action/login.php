@@ -1,37 +1,34 @@
 <?php
 session_start();
-include('conexao.php');
+require_once 'db_connect.php';
 
-$matricula = $_POST['matricula'];
-$senha = $_POST['senha'];
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $matricula = $_POST['matricula'];
+    $senha = $_POST['senha'];
 
-// Proteção contra SQL Injection
-$matricula = $mysqli->real_escape_string($matricula);
+    try {
+        $stmt = $pdo->prepare("SELECT * FROM Usuario WHERE matricula = ? AND status = 'ativo'");
+        $stmt->execute([$matricula]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Busca o usuário com status ativo
-$sql = "SELECT * FROM Usuario WHERE matricula = '$matricula' AND status = 'ativo'";
-$result = $mysqli->query($sql);
-
-if ($result && $result->num_rows > 0) {
-    $usuario = $result->fetch_assoc();
-
-    // Verifica a senha com hash
-    if (password_verify($senha, $usuario['senha'])) {
-        $_SESSION['matricula'] = $usuario['matricula'];
-        $_SESSION['perfil'] = $usuario['perfil'];
-        $_SESSION['nome_completo'] = $usuario['nome_completo'];
-
-        if ($usuario['perfil'] === 'Professor') {
-            header("Location: ../painel-professor-agenda.html");
-        } elseif ($usuario['perfil'] === 'adm') {
-            header("Location: ../painel-admin-agenda.html");
+        if ($user && password_verify($senha, $user['senha'])) {
+            $_SESSION['user_id'] = $user['matricula'];
+            $_SESSION['user_name'] = $user['nome_completo'];
+            $_SESSION['user_profile'] = $user['perfil'];
+            
+            if ($user['perfil'] == 'adm') {
+                header('Location: ../painel-admin-agenda.html');
+            } else {
+                header('Location: ../painel-professor-agenda.html');
+            }
+            exit();
         } else {
-            echo "<script>alert('Perfil inválido'); window.history.back();</script>";
+            header('Location: ../login.html?error=1');
+            exit();
         }
-    } else {
-        echo "<script>alert('Senha incorreta.'); window.history.back();</script>";
+    } catch (PDOException $e) {
+        header('Location: ../login.html?error=2');
+        exit();
     }
-} else {
-    echo "<script>alert('Usuário não encontrado ou inativo.'); window.history.back();</script>";
 }
 ?>

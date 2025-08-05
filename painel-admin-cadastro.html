@@ -1,12 +1,179 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Admin - SiLab</title>
     <link rel="stylesheet" href="Estilo/estilo.css">
     <script src="https://kit.fontawesome.com/0f27c66bcc.js" crossorigin="anonymous"></script>
-
+    <style>
+        /* Estilos específicos para esta página */
+        .principal03 {
+            margin-left: 250px;
+            padding: 20px;
+            transition: margin-left 0.3s;
+        }
+        
+        .sidebar.recolhida + .principal03 {
+            margin-left: 80px;
+        }
+        
+        .barra-de-acoes {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .form-pesquisa {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .botao-pesquisar, .botao-adicionar {
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .botao-adicionar {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .tabela-lab {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .tabela-lab th, .tabela-lab td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tabela-lab th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        
+        .coluna-acoes {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .botao-acao {
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .botao-editar {
+            background-color: #2196F3;
+            color: white;
+        }
+        
+        .botao-excluir {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        /* Estilos do Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-conteudo {
+            background: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .fechar {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #aaa;
+        }
+        
+        .fechar:hover {
+            color: #333;
+        }
+        
+        .linha-equipamento {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        
+        .remover-equipamento {
+            background: none;
+            border: none;
+            color: #f44336;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .botao-add-equipamento {
+            background: none;
+            border: none;
+            color: #2196F3;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 8px 0;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .botoes-modal {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .botoes-modal button {
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .botao-cancelar {
+            background-color: #f1f1f1;
+        }
+        
+        .botao-salvar {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
 </head>
 <body class="painel">
     <header>
@@ -20,15 +187,14 @@
 
         <div class="barra-de-acoes">
             <form action="" class="form-pesquisa">
-                    <label for="pesquisa-lab"><strong>Pesquisar:</strong></label> 
-                    <input type="text" id="pesquisa-lab" name="pesquisa-lab" placeholder="Digite o nome do laboratório..."> 
-                    <button type="submit" class="botao-pesquisar"><i class="fas fa-search"></i></button>
+                <label for="pesquisa-lab"><strong>Pesquisar:</strong></label> 
+                <input type="text" id="pesquisa-lab" name="pesquisa-lab" placeholder="Digite o nome do laboratório..."> 
+                <button type="submit" class="botao-pesquisar"><i class="fas fa-search"></i> Pesquisar</button>
             </form>
 
             <button onclick="abrirModal()" class="botao-adicionar">
                 <i class="fas fa-plus"></i> Adicionar novo Laboratório
             </button>
-
         </div>
         
         <table class="tabela-lab">
@@ -40,39 +206,14 @@
                     <th class="acoes">Ações</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>Laboratório 27</td>
-                    <td>30 alunos</td>
-                    <td>1 projetor, 15 computadores, 2 notebooks</td>
-                    <td class="coluna-acoes">
-                        <a href="" class="botao-acao botao-editar" title="Editar">
-                            <i class="fas fa-pencil-alt"></i>
-                        </a>
-                        <button class="bota-acao botao-excluir" title="Excluir">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Laboratório 26</td>
-                    <td>25 alunos</td>
-                    <td>2 projetores, 20 computadores, 3 notebooks</td>
-                    <td class="coluna-acoes">
-                        <button class="botao-acao botao-editar" title="Editar">
-                            <i class="fas fa-pencil-alt"></i>
-                        </button>
-                        <button class="botao-acao botao-excluir" title="Excluir">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </td>
-                </tr>
+            <tbody id="tabela-corpo">
+                <!-- Dados serão carregados via JavaScript -->
             </tbody>
         </table>
     </main>
 
     <footer>
-      <p>SigLab 2025 &copy; - Todos os direitos reservados.</p>
+        <p>SigLab 2025 &copy; - Todos os direitos reservados.</p>
     </footer>
 
     <aside class="sidebar">
@@ -86,14 +227,13 @@
             <p id="matricula-usuario">Matrícula: 000000</p>
         </div>
         
-
         <hr class="separador">
 
         <nav class="navegacao-principal">
             <a href="painel-admin-agenda.html" class="nav-link" data-tooltip="Agenda">
                 <i class="fas fa-calendar"></i> <span>Agenda</span>
             </a>
-            <a href="#" class="nav-link" data-tooltip="Cadastro">
+            <a href="painel-admin-cadastro.html" class="nav-link" data-tooltip="Cadastro">
                 <i class="fas fa-clipboard"></i> <span>Cadastro</span>
             </a>
         </nav>
@@ -106,8 +246,277 @@
         </a>
     </aside>
 
+    <!-- Modal de Cadastro de Laboratório -->
+    <div id="modalCadastroLab" class="modal">
+        <div class="modal-conteudo">
+            <span class="fechar" onclick="fecharModal()">&times;</span>
+            <h2 id="modal-titulo">Cadastrar novo laboratório</h2>
+            <form id="formLab">
+                <label for="nome">Nome</label>
+                <input type="text" id="nome" name="nome" placeholder="Digite o nome do laboratório" required>
+        
+                <label for="capacidade">Capacidade de pessoas:</label>
+                <input type="number" id="capacidade" name="capacidade" min="1" required>
+        
+                <h3>Equipamentos Disponíveis</h3>
+                <div id="equipamentos-container">
+                    <!-- Entradas dinâmicas de equipamentos -->
+                </div>
+        
+                <button type="button" onclick="adicionarEquipamento()" class="botao-add-equipamento">
+                    <i class="fas fa-plus" style="color: limegreen;"></i> Adicionar novo equipamento
+                </button>
+        
+                <div class="botoes-modal">
+                    <button type="button" onclick="fecharModal()" class="botao-cancelar">Cancelar</button>
+                    <button type="submit" class="botao-salvar">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        // Variáveis globais
+        let equipamentoIndex = 0;
+        let laboratorios = [];
+        
+        // Funções do Modal
+        function abrirModal(labId = null) {
+            const modal = document.getElementById("modalCadastroLab");
+            const form = document.getElementById("formLab");
+            const tituloModal = document.getElementById("modal-titulo");
+            
+            // Resetar formulário
+            form.reset();
+            document.getElementById("equipamentos-container").innerHTML = "";
+            equipamentoIndex = 0;
+            
+            // Configurar título
+            tituloModal.textContent = labId ? "Editar Laboratório" : "Cadastrar novo laboratório";
+            
+            // Se for edição, carregar dados do laboratório
+            if (labId) {
+                carregarLaboratorioParaEdicao(labId);
+            }
+            
+            modal.style.display = "block";
+        }
+        
+        async function carregarLaboratorioParaEdicao(labId) {
+            try {
+                const response = await fetch(`php_action/laboratorio/read-single.php?id=${labId}`);
+                
+                if (!response.ok) {
+                    throw new Error('Erro ao carregar laboratório');
+                }
+                
+                const laboratorio = await response.json();
+                
+                document.getElementById("nome").value = laboratorio.nome;
+                document.getElementById("capacidade").value = laboratorio.capacidade;
+                
+                // Adicionar equipamentos
+                if (laboratorio.equipamentos && laboratorio.equipamentos.length > 0) {
+                    laboratorio.equipamentos.forEach(equip => {
+                        adicionarEquipamento(equip.nome, equip.quantidade);
+                    });
+                } else {
+                    adicionarEquipamento();
+                }
+                
+                document.getElementById("formLab").dataset.id = labId;
+            } catch (error) {
+                console.error("Erro ao carregar laboratório:", error);
+                alert("Erro ao carregar dados do laboratório");
+            }
+        }
+        
+        function fecharModal() {
+            document.getElementById("modalCadastroLab").style.display = "none";
+        }
+        
+        function adicionarEquipamento(nome = "", quantidade = 1) {
+            const container = document.getElementById("equipamentos-container");
+            const div = document.createElement("div");
+            div.classList.add("linha-equipamento");
+            div.innerHTML = `
+                <input type="text" name="equipamentos[${equipamentoIndex}][nome]" 
+                       placeholder="Equipamento" value="${nome}" required>
+                <label>Qtd:</label>
+                <input type="number" name="equipamentos[${equipamentoIndex}][quantidade]" 
+                       min="1" value="${quantidade}" required>
+                <button type="button" class="remover-equipamento" onclick="this.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            container.appendChild(div);
+            equipamentoIndex++;
+        }
+        
+        //carregar laboratórios
+        async function carregarLaboratorios() {
+        const tbody = document.getElementById("tabela-corpo");
+        
+        try {
+            const response = await fetch('php_action/laboratorio/read.php');
+            const result = await response.json();
+            
+            if (!response.ok || !result.success) {
+                throw new Error(result.message || 'Erro no servidor');
+            }
+            
+            laboratorios = result.data || [];
+            renderizarLaboratorios();
+            
+        } catch (error) {
+            console.error("Erro:", error);
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="4" style="text-align: center; color: #d32f2f;">
+                        Erro ao carregar dados. Tente recarregar a página.
+                        <button onclick="carregarLaboratorios()" style="margin-left: 10px;">
+                            <i class="fas fa-sync-alt"></i> Recarregar
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+    function renderizarLaboratorios() {
+        const tbody = document.getElementById("tabela-corpo");
+        tbody.innerHTML = laboratorios.length === 0 ? 
+            `<tr><td colspan="4" style="text-align: center;">Nenhum laboratório cadastrado</td></tr>` :
+            laboratorios.map(lab => `
+                <tr>
+                    <td>${lab.nome}</td>
+                    <td>${lab.capacidade} alunos</td>
+                    <td>${lab.equipamentos || 'Nenhum equipamento'}</td>
+                    <td class="coluna-acoes">
+                        <button class="botao-acao botao-editar" title="Editar" onclick="abrirModal(${lab.id})">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                        <button class="botao-acao botao-excluir" title="Excluir" onclick="excluirLaboratorio(${lab.id})">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+    }
+        
+        // Função para excluir laboratório
+        async function excluirLaboratorio(id) {
+            if (confirm("Tem certeza que deseja excluir este laboratório?")) {
+                try {
+                    const response = await fetch(`php_action/laboratorio/delete.php`, {
+                        method: 'POST',
+                        body: JSON.stringify({ id: id }),
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        }
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.error) {
+                        throw new Error(result.message);
+                    }
+                    
+                    // Atualizar lista local
+                    laboratorios = laboratorios.filter(lab => lab.id !== id);
+                    carregarLaboratorios();
+                    alert(result.message);
+                } catch (error) {
+                    console.error("Erro ao excluir laboratório:", error);
+                    alert("Erro ao excluir laboratório: " + error.message);
+                }
+            }
+        }
+        
+        // Manipulador do formulário
+        document.getElementById("formLab").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const equipamentos = [];
+            
+            // Coletar equipamentos
+            document.querySelectorAll(".linha-equipamento").forEach(row => {
+                const nome = row.querySelector('input[type="text"]').value;
+                const quantidade = row.querySelector('input[type="number"]').value;
+                if (nome && quantidade) {
+                    equipamentos.push({ 
+                        nome: nome.trim(), 
+                        quantidade: parseInt(quantidade) 
+                    });
+                }
+            });
+            
+            const laboratorio = {
+                nome: formData.get("nome").trim(),
+                capacidade: parseInt(formData.get("capacidade")),
+                equipamentos
+            };
+            
+            try {
+                // Verificar se é edição ou criação
+                const isEdicao = this.dataset.id;
+                const url = isEdicao 
+                    ? 'php_action/laboratorio/update.php' 
+                    : 'php_action/laboratorio/create.php';
+                
+                if (isEdicao) {
+                    laboratorio.id = parseInt(this.dataset.id);
+                }
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify(laboratorio),
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.error) {
+                    throw new Error(result.message);
+                }
+                
+                if (!isEdicao && result.id) {
+                    // Adicionar o novo laboratório à lista local
+                    laboratorio.id = result.id;
+                    laboratorios.push(laboratorio);
+                } else if (isEdicao) {
+                    // Atualizar laboratório na lista local
+                    const index = laboratorios.findIndex(lab => lab.id == laboratorio.id);
+                    if (index !== -1) {
+                        laboratorios[index] = laboratorio;
+                    }
+                }
+                
+                carregarLaboratorios();
+                fecharModal();
+                alert(result.message);
+            } catch (error) {
+                console.error("Erro ao salvar laboratório:", error);
+                alert("Erro ao salvar laboratório: " + error.message);
+            }
+        });
+        
+        // Fechar modal ao clicar fora
+        window.onclick = function(event) {
+            const modal = document.getElementById("modalCadastroLab");
+            if (event.target === modal) {
+                fecharModal();
+            }
+        }
+        
+        // Carregar dados quando a página carregar
+        document.addEventListener("DOMContentLoaded", function() {
+            // Carregar informações do usuário
             fetch('php_action/session-info.php')
                 .then(response => response.json())
                 .then(data => {
@@ -124,125 +533,20 @@
                     alert("Erro na autenticação.");
                     window.location.href = 'login.html';
                 });
+            
+            // Carregar laboratórios
+            carregarLaboratorios();
+            
+            // Configurar sidebar
+            const toggleButton = document.getElementById('menu-sidebar');
+            const sidebar = document.querySelector('.sidebar');
+            
+            if (toggleButton && sidebar) {
+                toggleButton.addEventListener('click', function() {
+                    sidebar.classList.toggle('recolhida');
+                });
+            }
         });
     </script>
-
-    <!-- Modal de Cadastro de Laboratório -->
-    <div id="modalCadastroLab" class="modal">
-        <div class="modal-conteudo">
-          <span class="fechar" onclick="fecharModal()">&times;</span>
-          <h2>Cadastrar novo laboratório</h2>
-          <form id="formLab" action="cadastro_laboratorio.php" method="POST">
-      
-            <label for="nome">Nome</label>
-            <input type="text" id="nome" name="nome" placeholder="Digite o nome do laboratório" required>
-      
-            <label for="capacidade">Capacidade de pessoas:</label>
-            <input type="number" id="capacidade" name="capacidade" required>
-      
-            <h3>Equipamentos Disponíveis</h3>
-            <div id="equipamentos-container">
-              <!-- Entradas dinâmicas de equipamentos -->
-            </div>
-      
-            <button type="button" onclick="adicionarEquipamento()" class="botao-add-equipamento">
-              <span style="color: limegreen; font-size: 24px;">&#43;</span> Adicionar novo equipamento
-            </button>
-      
-            <div class="botoes">
-              <button type="button" onclick="fecharModal()">Cancelar</button>
-              <span>|</span>
-              <button type="submit">Cadastrar</button>
-            </div>
-          </form>
-        </div>
-      </div>
-  
-      <script>
-        let equipamentoIndex = 0;
-        
-        function abrirModal() {
-          document.getElementById("modalCadastroLab").style.display = "block";
-          equipamentoIndex = 0;
-          document.getElementById("equipamentos-container").innerHTML = "";
-          adicionarEquipamento();
-        }
-        
-        function fecharModal() {
-          document.getElementById("modalCadastroLab").style.display = "none";
-        }
-        
-        function adicionarEquipamento() {
-          const container = document.getElementById("equipamentos-container");
-          const div = document.createElement("div");
-          div.classList.add("linha-equipamento");
-          div.innerHTML = `
-            <input type="text" name="equipamentos[${equipamentoIndex}][nome]" placeholder="Equipamento" required>
-            <label>Qtd:</label>
-            <input type="number" name="equipamentos[${equipamentoIndex}][quantidade]" min="1" required>
-          `;
-          container.appendChild(div);
-          equipamentoIndex++;
-        }
-        
-        // Fecha modal se clicar fora
-        window.onclick = function(event) {
-          const modal = document.getElementById("modalCadastroLab");
-          if (event.target === modal) fecharModal();
-        }
-        </script>
-
-        <style>
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-.modal-conteudo {
-  background: white;
-  margin: 5% auto;
-  padding: 20px;
-  border-radius: 10px;
-  width: 400px;
-  position: relative;
-}
-.fechar {
-  position: absolute;
-  top: 10px; right: 15px;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-}
-.linha-equipamento {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-.botao-add-equipamento {
-  background: none;
-  border: none;
-  color: #007bff;
-  cursor: pointer;
-  font-size: 16px;
-  padding: 8px 0;
-}
-.botoes {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 20px;
-}
-.botoes button {
-  padding: 8px 14px;
-  border-radius: 5px;
-  border: none;
-  cursor: pointer;
-}
-</style>
-        
-    
 </body>
 </html>
