@@ -70,8 +70,9 @@
 
         <div class="perfil">
             <img src="Imagens/user.png" alt="Avatar do Usuário" class="avatar">
-            <h2>Lucas Matos</h2>
-            <p>Matrícula: 202I329i2</p>
+            <h2 id="nome-usuario">Nome do Usuário</h2>
+            <p id="matricula-usuario">Matrícula: </p>
+
         </div>
 
         <hr class="separador">
@@ -94,21 +95,32 @@
     </aside>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-
-        const toggleButton = document.getElementById('menu-sidebar');
-        const sidebar = document.querySelector('.sidebar');
-        const body = document.body;
-
-        if (toggleButton && sidebar && body) {
-            
-            toggleButton.addEventListener('click', function() {
-            
-            sidebar.classList.toggle('recolhida');
-            body.classList.toggle('sidebar-recolhida');
-            });
-        }
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggleButton = document.getElementById('menu-sidebar');
+            const sidebar = document.querySelector('.sidebar');
+            const body = document.body;
+        
+            if (toggleButton && sidebar && body) {
+                toggleButton.addEventListener('click', function () {
+                    sidebar.classList.toggle('recolhida');
+                    body.classList.toggle('sidebar-recolhida');
+                });
+            }
+        
+            // Pega nome e matrícula do PHP
+            fetch('php_action/session-info.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.nome_completo && data.matricula) {
+                        document.getElementById('nome-usuario').textContent = data.nome_completo;
+                        document.getElementById('matricula-usuario').textContent = "Matrícula: " + data.matricula;
+                    } else {
+                        console.error('Erro ao buscar dados da sessão');
+                    }
+                })
+                .catch(error => console.error('Erro:', error));
         });
-    </script>
+        </script>
+        
 </body>
 </html>

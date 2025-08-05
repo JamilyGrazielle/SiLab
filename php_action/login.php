@@ -19,6 +19,7 @@ if ($result && $result->num_rows > 0) {
     if (password_verify($senha, $usuario['senha'])) {
         $_SESSION['matricula'] = $usuario['matricula'];
         $_SESSION['perfil'] = $usuario['perfil'];
+        $_SESSION['nome_completo'] = $usuario['nome_completo'];
 
         if ($usuario['perfil'] === 'Professor') {
             header("Location: ../painel-professor-agenda.html");
