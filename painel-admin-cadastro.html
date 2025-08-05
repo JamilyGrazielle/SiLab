@@ -25,9 +25,10 @@
                     <button type="submit" class="botao-pesquisar"><i class="fas fa-search"></i></button>
             </form>
 
-            <a href="" class="botao-adicionar">
+            <button onclick="abrirModal()" class="botao-adicionar">
                 <i class="fas fa-plus"></i> Adicionar novo Laboratório
-            </a>
+            </button>
+
         </div>
         
         <table class="tabela-lab">
@@ -125,6 +126,48 @@
                 });
         });
     </script>
+
+    <!-- Modal de Cadastro de Laboratório -->
+    <div id="modalCadastroLab" class="modal">
+        <div class="modal-conteudo">
+        <span class="fechar" onclick="fecharModal()">&times;</span>
+        <h2>Cadastro de Laboratório</h2>
+        <form action="cadastro_laboratorio.php" method="POST">
+            <label for="nome">Nome do Laboratório:</label>
+            <input type="text" id="nome" name="nome" required>
+    
+            <label for="numero">Número:</label>
+            <input type="number" id="numero" name="numero" required>
+    
+            <label for="capacidade">Capacidade:</label>
+            <input type="number" id="capacidade" name="capacidade" required>
+    
+            <label for="equipamentos">Equipamentos Disponíveis:</label>
+            <textarea id="equipamentos" name="equipamentos" rows="4" required></textarea>
+    
+            <button type="submit">Cadastrar</button>
+        </form>
+        </div>
+    </div>
+  
+    <script>
+        function abrirModal() {
+          document.getElementById("modalCadastroLab").style.display = "block";
+        }
+        
+        function fecharModal() {
+          document.getElementById("modalCadastroLab").style.display = "none";
+        }
+        
+        // Fecha a modal se clicar fora dela
+        window.onclick = function(event) {
+          const modal = document.getElementById("modalCadastroLab");
+          if (event.target === modal) {
+            modal.style.display = "none";
+          }
+        };
+        </script>
+        
     
 </body>
 </html>
