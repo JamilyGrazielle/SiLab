@@ -130,43 +130,118 @@
     <!-- Modal de Cadastro de Laboratório -->
     <div id="modalCadastroLab" class="modal">
         <div class="modal-conteudo">
-        <span class="fechar" onclick="fecharModal()">&times;</span>
-        <h2>Cadastro de Laboratório</h2>
-        <form action="cadastro_laboratorio.php" method="POST">
-            <label for="nome">Nome do Laboratório:</label>
-            <input type="text" id="nome" name="nome" required>
-    
-            <label for="numero">Número:</label>
-            <input type="number" id="numero" name="numero" required>
-    
-            <label for="capacidade">Capacidade:</label>
+          <span class="fechar" onclick="fecharModal()">&times;</span>
+          <h2>Cadastrar novo laboratório</h2>
+          <form id="formLab" action="cadastro_laboratorio.php" method="POST">
+      
+            <label for="nome">Nome</label>
+            <input type="text" id="nome" name="nome" placeholder="Digite o nome do laboratório" required>
+      
+            <label for="capacidade">Capacidade de pessoas:</label>
             <input type="number" id="capacidade" name="capacidade" required>
-    
-            <label for="equipamentos">Equipamentos Disponíveis:</label>
-            <textarea id="equipamentos" name="equipamentos" rows="4" required></textarea>
-    
-            <button type="submit">Cadastrar</button>
-        </form>
+      
+            <h3>Equipamentos Disponíveis</h3>
+            <div id="equipamentos-container">
+              <!-- Entradas dinâmicas de equipamentos -->
+            </div>
+      
+            <button type="button" onclick="adicionarEquipamento()" class="botao-add-equipamento">
+              <span style="color: limegreen; font-size: 24px;">&#43;</span> Adicionar novo equipamento
+            </button>
+      
+            <div class="botoes">
+              <button type="button" onclick="fecharModal()">Cancelar</button>
+              <span>|</span>
+              <button type="submit">Cadastrar</button>
+            </div>
+          </form>
         </div>
-    </div>
+      </div>
   
-    <script>
+      <script>
+        let equipamentoIndex = 0;
+        
         function abrirModal() {
           document.getElementById("modalCadastroLab").style.display = "block";
+          equipamentoIndex = 0;
+          document.getElementById("equipamentos-container").innerHTML = "";
+          adicionarEquipamento();
         }
         
         function fecharModal() {
           document.getElementById("modalCadastroLab").style.display = "none";
         }
         
-        // Fecha a modal se clicar fora dela
+        function adicionarEquipamento() {
+          const container = document.getElementById("equipamentos-container");
+          const div = document.createElement("div");
+          div.classList.add("linha-equipamento");
+          div.innerHTML = `
+            <input type="text" name="equipamentos[${equipamentoIndex}][nome]" placeholder="Equipamento" required>
+            <label>Qtd:</label>
+            <input type="number" name="equipamentos[${equipamentoIndex}][quantidade]" min="1" required>
+          `;
+          container.appendChild(div);
+          equipamentoIndex++;
+        }
+        
+        // Fecha modal se clicar fora
         window.onclick = function(event) {
           const modal = document.getElementById("modalCadastroLab");
-          if (event.target === modal) {
-            modal.style.display = "none";
-          }
-        };
+          if (event.target === modal) fecharModal();
+        }
         </script>
+
+        <style>
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.modal-conteudo {
+  background: white;
+  margin: 5% auto;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  position: relative;
+}
+.fechar {
+  position: absolute;
+  top: 10px; right: 15px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.linha-equipamento {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.botao-add-equipamento {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 8px 0;
+}
+.botoes {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+.botoes button {
+  padding: 8px 14px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
+</style>
         
     
 </body>
