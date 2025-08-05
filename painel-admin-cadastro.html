@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - SiLab</title>
+    <link rel="stylesheet" href="Estilo/estilo.css">
+    <script src="https://kit.fontawesome.com/0f27c66bcc.js" crossorigin="anonymous"></script>
+
+</head>
+<body class="painel">
+    <header>
+        <a href="index.html" class="logo-link">
+            <img src="Imagens/logo.png" alt="Logo SiLab" class="logo-imagem">
+        </a>
+    </header>
+
+    <main class="principal03">
+        <h1>Gerenciamento de Laboratórios</h1>
+
+        <div class="barra-de-acoes">
+            <form action="" class="form-pesquisa">
+                <fieldset>
+                    <label for="pesquisa-lab"><strong>Pesquisar:</strong></label> 
+                    <input type="text" id="pesquisa-lab" name="pesquisa-lab" placeholder="Digite o nome do laboratório..."> 
+                    <button type="submit" class="botao-pesquisar"><i class="fas fa-search"></i></button>
+                </fieldset>
+
+                <a href="" class="botao-adicionar">
+                    <i class="fas fa-plus"></i> Adicionar novo Laboratório
+                </a>
+            </form>
+        </div>
+        
+
+        <table class="tabela-lab">
+            <thead>
+                <tr>
+                    <th>Nome do Laboratório</th>
+                    <th>Capacidade</th>
+                    <th>Equipamento</th>
+                    <th class="acoes">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Laboratório 27</td>
+                    <td>30 alunos</td>
+                    <td>1 projetor, 15 computadores, 2 notebooks</td>
+                    <td class="coluna-acoes">
+                        <a href="" class="botao-acao botao-editar" title="Editar">
+                            <i class="fas fa-pencil-alt"></i>
+                        </a>
+                        <button class="bota-acao botao-excluir" title="Excluir">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+
+    <footer>
+      <p>SigLab 2025 &copy; - Todos os direitos reservados.</p>
+    </footer>
+
+    <aside class="sidebar">
+        <div class="menu">
+            <i class="fas fa-bars" id="menu-sidebar"></i> 
+        </div>
+
+        <div class="perfil">
+            <img src="Imagens/user.png" alt="Avatar do Usuário" class="avatar">
+            <h2>Marcio Silva</h2>
+            <p>Matrícula: 202I75Adm</p>
+        </div>
+
+        <hr class="separador">
+
+        <nav class="navegacao-principal">
+            <a href="painel-admin-agenda.html" class="nav-link" data-tooltip="Agenda">
+                <i class="fas fa-calendar"></i> <span>Agenda</span>
+            </a>
+            <a href="#" class="nav-link" data-tooltip="Cadastro">
+                <i class="fas fa-clipboard"></i> <span>Cadastro</span>
+            </a>
+        </nav>
+
+        <hr class="separador">
+
+        <a href="index.html" class="nav-link botao-sair" data-tooltip="Sair">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Sair</span>
+        </a>
+    </aside>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+        const toggleButton = document.getElementById('menu-sidebar');
+        const sidebar = document.querySelector('.sidebar');
+        const body = document.body;
+
+        if (toggleButton && sidebar && body) {
+            
+            toggleButton.addEventListener('click', function() {
+            
+            sidebar.classList.toggle('recolhida');
+            body.classList.toggle('sidebar-recolhida');
+            });
+        }
+        });
+    </script>
+</body>
+</html>
