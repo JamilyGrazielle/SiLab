@@ -1,28 +1,43 @@
 <?php
-session_start();
-require_once '../db_connect.php';
+header('Content-Type: application/json');
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['user_profile'] == 'adm') {
-    $lab_id = $_POST['id'];
+require_once '../conexao.php';
 
-    try {
-        $pdo->beginTransaction();
-        
-        // Remover relacionamentos com equipamentos
-        $stmt = $pdo->prepare("DELETE FROM Laboratorio_Equipamento WHERE laboratorio_id = ?");
-        $stmt->execute([$lab_id]);
-        
-        // Remover laboratório
-        $stmt = $pdo->prepare("DELETE FROM Laboratorio WHERE id = ?");
-        $stmt->execute([$lab_id]);
-        
-        $pdo->commit();
-        echo json_encode(['success' => true, 'message' => 'Laboratório removido com sucesso!']);
-    } catch (PDOException $e) {
-        $pdo->rollBack();
-        echo json_encode(['error' => true, 'message' => 'Erro ao remover laboratório: ' . $e->getMessage()]);
-    }
-} else {
-    echo json_encode(['error' => true, 'message' => 'Acesso não autorizado']);
+$data = json_decode(file_get_contents("php://input"), true);
+
+if (!isset($data['id'])) {
+    http_response_code(400);
+    echo json_encode(['error' => true, 'message' => 'ID do laboratório não fornecido']);
+    exit;
 }
+
+$id = intval($data['id']);
+
+// Verifica se o laboratório existe
+$sqlCheck = "SELECT * FROM Laboratorio WHERE id = ?";
+$stmtCheck = $mysqli->prepare($sqlCheck);
+$stmtCheck->bind_param("i", $id);
+$stmtCheck->execute();
+$resultCheck = $stmtCheck->get_result();
+
+if ($resultCheck->num_rows === 0) {
+    http_response_code(404);
+    echo json_encode(['error' => true, 'message' => 'Laboratório não encontrado']);
+    exit;
+}
+
+// Realiza a exclusão
+$sql = "DELETE FROM Laboratorio WHERE id = ?";
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("i", $id);
+
+if ($stmt->execute()) {
+    echo json_encode(['error' => false, 'message' => 'Laboratório excluído com sucesso']);
+} else {
+    http_response_code(500);
+    echo json_encode(['error' => true, 'message' => 'Erro ao excluir o laboratório: ' . $stmt->error]);
+}
+
+$stmt->close();
+$mysqli->close();
 ?>

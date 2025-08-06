@@ -437,8 +437,9 @@
                     }
                     
                     // Atualizar lista local
-                    laboratorios = laboratorios.filter(lab => lab.id !== id);
-                    renderizarLaboratorios();
+                    carregarLaboratorios(); // Atualiza a tabela com os dados mais recentes
+                    fecharModal();
+                    alert(result.message);
                     alert(result.message);
                 } catch (error) {
                     console.error("Erro ao excluir laboratório:", error);
@@ -506,8 +507,11 @@
                     // Atualizar laboratório na lista local
                     const index = laboratorios.findIndex(lab => lab.id == laboratorio.id);
                     if (index !== -1) {
+                        // Converte equipamentos em string para exibição
+                        laboratorio.equipamentos = laboratorio.equipamentos.map(e => `${e.nome} (${e.quantidade})`).join(', ');
                         laboratorios[index] = laboratorio;
                     }
+
                 }
                 
                 renderizarLaboratorios();
