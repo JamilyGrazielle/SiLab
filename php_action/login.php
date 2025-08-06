@@ -1,34 +1,32 @@
 <?php
 session_start();
-require_once 'db_connect.php';
+require_once 'conexao.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $matricula = $_POST['matricula'];
-    $senha = $_POST['senha'];
+// Lê dados enviados
+$matricula = $_POST['matricula'] ?? '';
+$senha = $_POST['senha'] ?? '';
 
-    try {
-        $stmt = $pdo->prepare("SELECT * FROM Usuario WHERE matricula = ? AND status = 'ativo'");
-        $stmt->execute([$matricula]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+$sql = "SELECT * FROM Usuario WHERE matricula = ?";
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("s", $matricula);
+$stmt->execute();
+$result = $stmt->get_result();
 
-        if ($user && password_verify($senha, $user['senha'])) {
-            $_SESSION['user_id'] = $user['matricula'];
-            $_SESSION['user_name'] = $user['nome_completo'];
-            $_SESSION['user_profile'] = $user['perfil'];
-            
-            if ($user['perfil'] == 'adm') {
-                header('Location: ../painel-admin-agenda.php');
-            } else {
-                header('Location: ../painel-professor-agenda.php');
-            }
-            exit();
-        } else {
-            header('Location: ../login.php?error=1');
-            exit();
-        }
-    } catch (PDOException $e) {
-        header('Location: ../login.php?error=2');
-        exit();
+if ($result->num_rows === 1) {
+    $usuario = $result->fetch_assoc();
+
+    if (password_verify($senha, $usuario['senha'])) {
+        $_SESSION['user_id'] = $usuario['matricula'];
+        $_SESSION['user_name'] = $usuario['nome_completo'];
+        $_SESSION['user_profile'] = $usuario['perfil'];
+
+        echo json_encode(['success' => true]);
+        exit;
     }
 }
+
+// Login inválido
+http_response_code(401);
+echo json_encode(['success' => false, 'message' => 'Matrícula ou senha incorreta.']);
+exit;
 ?>
