@@ -15,7 +15,7 @@
     <?php require_once 'includes/sidebar.php';?>
 
 
-    <main id="principal03" style="margin-bottom: 600px;">
+    <main id="principal03">
         <!-- <form action=""></form>
             <fieldset id="filtro-calendario">
                 <legend><strong>Filtrar por:</strong></legend>

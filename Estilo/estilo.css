@@ -651,7 +651,7 @@ main.principal03 h1 {
   border-radius: 4px;
 }
 
-/* Estilo para o cabeçalho com logo alinhada à direita */
+/* Estilo para o cabeçalho com logo alinhada à direita
 .cabecalho-superior {
   height: 80px;
   display: flex;
@@ -663,14 +663,14 @@ main.principal03 h1 {
 }
 
 /* Estilo da logo */
-.logo-imagem {
-  height: 50px; /* ajuste conforme o tamanho ideal */
+/* .logo-imagem {
+  height: 50px;
   max-width: 250%;
   object-fit: contain;
   transition: transform 0.3s ease;
 }
 
 .logo-link:hover .logo-imagem {
-  transform: scale(1.05); /* leve zoom ao passar o mouse */
-}
+  transform: scale(1.05); 
+}  */
 

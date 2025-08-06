@@ -16,7 +16,6 @@
     <?php require_once 'includes/sidebar.php';?>
 
     <main class="principal03">
-        <p>Agenda</p>
     </main>
 
     <?php require_once 'includes/footer.php';?>
