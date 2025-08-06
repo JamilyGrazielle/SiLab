@@ -19,7 +19,7 @@
                 <i class="fas fa-calendar-alt"></i> <span>Agenda</span>
             </a>
             <a href="painel-admin-cadastro.php" class="nav-link" data-tooltip="Cadastro">
-                <i class="fas fa-clipboard"></i> <span>Cadastro</span>
+                <i class="fas fa-clipboard"></i> <span>Laboratórios</span>
             </a>
             <?php elseif (isset($_SESSION['user_profile']) && $_SESSION['user_profile'] == 'Professor'): ?>
             
