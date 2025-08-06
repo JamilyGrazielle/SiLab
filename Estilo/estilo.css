@@ -70,7 +70,6 @@ footer {
   justify-content: center;
 }
 
-/* Index.html */
 
 #slideshow_section {
   position: relative;
@@ -180,7 +179,6 @@ button.next {
   background-color: rgba(245, 245, 245, 0.836);
 }
 
-/* Login.html */
 
 #principal02 {
   width: 500px;
@@ -271,7 +269,6 @@ button.next {
   margin-top: 5em;
 }
 
-/* Painel */
 
 .painel header,
 .principal03,
@@ -293,7 +290,6 @@ button.next {
   display: flex;
   gap: 1em;
   border-radius: 10px;
-  /* background-color: #4CAF50; */
   border: 3px solid black;
   width: 600px;
 }
@@ -481,7 +477,6 @@ button.next {
   border-right-color: #E74C3C;
 }
 
-/* Painel-Admin-Cadastro */
 
 main.principal03 h1 {
   color: #2D3748;
