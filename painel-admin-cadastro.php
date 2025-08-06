@@ -563,23 +563,15 @@
                 }
                 
                 if (!isEdicao && result.id) {
-                    // Adicionar o novo laboratório à lista local
-                    laboratorio.id = result.id;
-                    laboratorios.push(laboratorio);
+                    // Após o cadastro, recarrega a lista do backend
+                    await carregarLaboratorios();
                 } else if (isEdicao) {
-                    // Atualizar laboratório na lista local
-                    const index = laboratorios.findIndex(lab => lab.id == laboratorio.id);
-                    if (index !== -1) {
-                        // Converte equipamentos em string para exibição
-                        laboratorio.equipamentos = laboratorio.equipamentos.map(e => `${e.nome} (${e.quantidade})`).join(', ');
-                        laboratorios[index] = laboratorio;
-                    }
-
+                    await carregarLaboratorios();
                 }
-                
-                renderizarLaboratorios();
+
                 fecharModal();
                 alert(result.message);
+
             } catch (error) {
                 console.error("Erro ao salvar laboratório:", error);
                 alert("Erro ao salvar laboratório: " + error.message);
