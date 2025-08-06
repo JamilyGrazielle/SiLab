@@ -27,6 +27,6 @@ if ($result->num_rows === 1) {
 
 // Login inválido
 http_response_code(401);
-echo json_encode(['success' => false, 'message' => 'Matrícula ou senha incorreta.']);
+echo json_encode(['success' => false, 'message' => 'Matrícula ou senha invalidas.']);
 exit;
 ?>
