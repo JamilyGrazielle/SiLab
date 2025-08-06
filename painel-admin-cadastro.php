@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="Estilo/estilo.css">
     <script src="https://kit.fontawesome.com/0f27c66bcc.js" crossorigin="anonymous"></script>
     <style>
-        /* Estilos específicos para esta página */
         .principal03 {
             margin-left: 250px;
             padding: 20px;
@@ -41,11 +40,6 @@
             display: flex;
             align-items: center;
             gap: 5px;
-        }
-        
-        .botao-adicionar {
-            background-color: #4CAF50;
-            color: white;
         }
         
         .tabela-lab {
@@ -84,16 +78,27 @@
             color: white;
         }
         
-        /* Estilos do Modal */
         .modal {
-            display: none;
+            display: none; 
             position: fixed;
             z-index: 1000;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0, 0, 0, 0.6); 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal.ativo {
+            opacity: 1;
+            visibility: visible;
+            animation: fadeIn 0.3s ease;
         }
         
         .modal-conteudo {
@@ -106,19 +111,59 @@
             position: relative;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
+
+        .modal-conteudo {
+            background: white;
+            padding: 25px; 
+            border-radius: 10px;
+            width: 90%;
+            max-width: 550px;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            overflow: hidden; 
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.ativo .modal-conteudo {
+            animation: slideDownFadeIn 0.3s ease forwards;
+        }
         
         .fechar {
-            position: absolute;
-            top: 10px;
-            right: 15px;
+            background: none;
+            border: none;
             font-size: 28px;
             font-weight: bold;
             cursor: pointer;
             color: #aaa;
+            padding: 0 5px;
         }
-        
-        .fechar:hover {
-            color: #333;
+        .fechar:hover { color: #333; }
+
+        .modal-conteudo {
+            margin-bottom: 20px;
+        }
+
+        .modal-conteudo label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .modal-conteudo input[type="text"],
+        .modal-conteudo input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: box-shadow 0.2s, border-color 0.2s;
+        }
+
+        .modal-conteudo input:focus {
+            outline: none;
+            border-color: var(--cor-primaria);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
         }
         
         .linha-equipamento {
@@ -127,6 +172,9 @@
             margin-bottom: 10px;
             align-items: center;
         }
+
+        .linha-equipamento input[type="text"] { flex-grow: 1; }
+        .linha-equipamento input[type="number"] { max-width: 80px; }
         
         .remover-equipamento {
             background: none;
@@ -182,6 +230,16 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDownFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body class="painel">
@@ -232,12 +290,16 @@
             <span class="fechar" onclick="fecharModal()">&times;</span>
             <h2 id="modal-titulo">Cadastrar novo laboratório</h2>
             <form id="formLab">
-                <label for="nome">Nome</label>
-                <input type="text" id="nome" name="nome" placeholder="Digite o nome do laboratório" required>
-        
-                <label for="capacidade">Capacidade de pessoas:</label>
-                <input type="number" id="capacidade" name="capacidade" min="1" required>
-        
+                <div class="form-grupo">
+                    <label for="nome">Nome</label>
+                    <input type="text" id="nome" name="nome" placeholder="Digite o nome do laboratório" required>
+                </div>
+                
+                <div class="form-grupo">
+                    <label for="capacidade">Capacidade de pessoas:</label>
+                    <input type="number" id="capacidade" name="capacidade" min="1" required>
+                </div>
+
                 <h3>Equipamentos Disponíveis</h3>
                 <div id="equipamentos-container">
                     <!-- Entradas dinâmicas de equipamentos -->
@@ -279,7 +341,7 @@
                 carregarLaboratorioParaEdicao(labId);
             }
             
-            modal.style.display = "block";
+            modal.classList.add("ativo"); 
         }
         
         async function carregarLaboratorioParaEdicao(labId) {
@@ -312,7 +374,8 @@
         }
         
         function fecharModal() {
-            document.getElementById("modalCadastroLab").style.display = "none";
+            const modal = document.getElementById("modalCadastroLab");
+            modal.classList.remove("ativo");
         }
         
         function adicionarEquipamento(nome = "", quantidade = 1) {
@@ -440,7 +503,6 @@
                     // Atualizar lista local
                     carregarLaboratorios(); // Atualiza a tabela com os dados mais recentes
                     fecharModal();
-                    alert(result.message);
                     alert(result.message);
                 } catch (error) {
                     console.error("Erro ao excluir laboratório:", error);

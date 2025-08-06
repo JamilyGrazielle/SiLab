@@ -122,7 +122,7 @@ button.next {
   position: absolute;
   top: 15%;
   left: 15%;
-  background-color: rgb(76, 175, 80, 0.8);
+  background-color: rgb(76, 175, 80, 0.95);
   padding: 5px 15px;
   border: 1px solid #8feb68;
   border-radius: 30px;
@@ -235,6 +235,7 @@ button.next {
   font-size: 15px;
   font-style: italic;
 }
+
 #principal02 input:focus {
   border: 1px solid #4CAF50;
   outline: none; 
@@ -541,11 +542,11 @@ main.principal03 h1 {
 }
 
 .botao-adicionar {
-  background-color: #4CAF50; 
+  background-color: #007bff; 
 }
 
 .botao-adicionar:hover {
-  background-color: #2bad2f;
+  background-color: #0056b3;
   border-color: #2D3748;
   transform: translateY(-2px); 
 }
@@ -638,19 +639,6 @@ main.principal03 h1 {
   font-size: 28px;
   font-weight: bold;
   cursor: pointer;
-}
-
-.botao-adicionar {
-  background-color: #007bff;
-  color: white;
-  padding: 10px 18px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.botao-adicionar:hover {
-  background-color: #0056b3;
 }
 
 .modal-conteudo input,

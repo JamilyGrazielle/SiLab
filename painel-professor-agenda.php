@@ -16,7 +16,7 @@
 
 
     <main id="principal03" style="margin-bottom: 600px;">
-        <form action=""></form>
+        <!-- <form action=""></form>
             <fieldset id="filtro-calendario">
                 <legend><strong>Filtrar por:</strong></legend>
 
@@ -54,7 +54,7 @@
             </tr>
             <tr>Teste</tr>
             <tr>Teste</tr>
-        </table>
+        </table> -->
 
     </main>
 

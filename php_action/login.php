@@ -20,7 +20,7 @@ if ($result->num_rows === 1) {
         $_SESSION['user_name'] = $usuario['nome_completo'];
         $_SESSION['user_profile'] = $usuario['perfil'];
 
-        echo json_encode(['success' => true]);
+        echo json_encode(['success' => true, 'perfil' => $usuario['perfil']]);
         exit;
     }
 }
