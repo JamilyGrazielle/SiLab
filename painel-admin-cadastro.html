@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="Estilo/estilo.css">
     <script src="https://kit.fontawesome.com/0f27c66bcc.js" crossorigin="anonymous"></script>
     <style>
+        /* Estilos específicos para esta página */
         .principal03 {
             margin-left: 250px;
             padding: 20px;
@@ -85,6 +86,7 @@
             color: white;
         }
         
+        /* Estilos do Modal */
         .modal {
             display: none;
             position: fixed;
@@ -171,6 +173,17 @@
             background-color: #4CAF50;
             color: white;
         }
+
+        /* Estilo do spinner */
+        .loading {
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="painel">
@@ -205,7 +218,11 @@
                 </tr>
             </thead>
             <tbody id="tabela-corpo">
-                <!-- Dados serão carregados via JavaScript -->
+                <tr>
+                    <td colspan="4" style="text-align: center;">
+                        <i class="fas fa-spinner loading"></i> Carregando laboratórios...
+                    </td>
+                </tr>
             </tbody>
         </table>
     </main>
@@ -351,41 +368,74 @@
             equipamentoIndex++;
         }
         
-        //carregar laboratórios
+        // Função para carregar laboratórios com tratamento de erro aprimorado
         async function carregarLaboratorios() {
-        const tbody = document.getElementById("tabela-corpo");
-        
-        try {
-            const response = await fetch('php_action/laboratorio/read.php');
-            const result = await response.json();
+            const tbody = document.getElementById("tabela-corpo");
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align: center;"><i class="fas fa-spinner loading"></i> Carregando...</td></tr>`;
             
-            if (!response.ok || !result.success) {
-                throw new Error(result.message || 'Erro no servidor');
+            try {
+                const response = await fetch('php_action/laboratorio/read.php');
+                
+                // Verificar se a resposta está vazia
+                if (response.status === 204) {
+                    laboratorios = [];
+                    renderizarLaboratorios();
+                    return;
+                }
+                
+                // Tentar parsear como JSON
+                const result = await response.json();
+                
+                if (!response.ok || !result.success) {
+                    throw new Error(result.message || 'Erro no servidor');
+                }
+                
+                laboratorios = result.data || [];
+                renderizarLaboratorios();
+                
+            } catch (error) {
+                console.error("Erro ao carregar laboratórios:", error);
+                
+                // Verificar se é erro de rede ou de servidor
+                const erroMsg = error.message.includes('Failed to fetch') 
+                    ? 'Erro de conexão com o servidor' 
+                    : error.message;
+                
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: #d32f2f; padding: 20px;">
+                            <div style="margin-bottom: 10px;">
+                                <i class="fas fa-exclamation-triangle" style="font-size: 24px;"></i>
+                            </div>
+                            <strong>Erro ao carregar dados</strong><br>
+                            ${erroMsg || 'Tente recarregar a página'}
+                            <div style="margin-top: 15px;">
+                                <button onclick="carregarLaboratorios()" class="botao-pesquisar">
+                                    <i class="fas fa-sync-alt"></i> Tentar novamente
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        function renderizarLaboratorios() {
+            const tbody = document.getElementById("tabela-corpo");
+            
+            if (laboratorios.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" style="text-align: center; padding: 20px;">
+                            <i class="fas fa-inbox" style="font-size: 48px; color: #ccc; margin-bottom: 10px;"></i><br>
+                            Nenhum laboratório cadastrado
+                        </td>
+                    </tr>
+                `;
+                return;
             }
             
-            laboratorios = result.data || [];
-            renderizarLaboratorios();
-            
-        } catch (error) {
-            console.error("Erro:", error);
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="4" style="text-align: center; color: #d32f2f;">
-                        Erro ao carregar dados. Tente recarregar a página.
-                        <button onclick="carregarLaboratorios()" style="margin-left: 10px;">
-                            <i class="fas fa-sync-alt"></i> Recarregar
-                        </button>
-                    </td>
-                </tr>
-            `;
-        }
-    }
-
-    function renderizarLaboratorios() {
-        const tbody = document.getElementById("tabela-corpo");
-        tbody.innerHTML = laboratorios.length === 0 ? 
-            `<tr><td colspan="4" style="text-align: center;">Nenhum laboratório cadastrado</td></tr>` :
-            laboratorios.map(lab => `
+            tbody.innerHTML = laboratorios.map(lab => `
                 <tr>
                     <td>${lab.nome}</td>
                     <td>${lab.capacidade} alunos</td>
@@ -400,7 +450,7 @@
                     </td>
                 </tr>
             `).join('');
-    }
+        }
         
         // Função para excluir laboratório
         async function excluirLaboratorio(id) {
@@ -423,7 +473,7 @@
                     
                     // Atualizar lista local
                     laboratorios = laboratorios.filter(lab => lab.id !== id);
-                    carregarLaboratorios();
+                    renderizarLaboratorios();
                     alert(result.message);
                 } catch (error) {
                     console.error("Erro ao excluir laboratório:", error);
@@ -495,7 +545,7 @@
                     }
                 }
                 
-                carregarLaboratorios();
+                renderizarLaboratorios();
                 fecharModal();
                 alert(result.message);
             } catch (error) {
