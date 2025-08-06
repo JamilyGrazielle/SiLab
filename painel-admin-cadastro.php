@@ -60,7 +60,6 @@
         }
         
         .tabela-lab th {
-            background-color: #f2f2f2;
             font-weight: bold;
         }
         
@@ -78,12 +77,10 @@
         }
         
         .botao-editar {
-            background-color: #2196F3;
             color: white;
         }
         
         .botao-excluir {
-            background-color: #f44336;
             color: white;
         }
         
