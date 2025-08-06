@@ -385,22 +385,22 @@
             }
         }
 
-        function renderizarLaboratorios() {
+        function renderizarLaboratorios(lista = laboratorios) {
             const tbody = document.getElementById("tabela-corpo");
-            
-            if (laboratorios.length === 0) {
+
+            if (lista.length === 0) {
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="4" style="text-align: center; padding: 20px;">
                             <i class="fas fa-inbox" style="font-size: 48px; color: #ccc; margin-bottom: 10px;"></i><br>
-                            Nenhum laboratório cadastrado
+                            Nenhum laboratório encontrado
                         </td>
                     </tr>
                 `;
                 return;
             }
-            
-            tbody.innerHTML = laboratorios.map(lab => `
+
+            tbody.innerHTML = lista.map(lab => `
                 <tr>
                     <td>${lab.nome}</td>
                     <td>${lab.capacidade} alunos</td>
@@ -416,6 +416,7 @@
                 </tr>
             `).join('');
         }
+
         
         // Função para excluir laboratório
         async function excluirLaboratorio(id) {
@@ -533,6 +534,18 @@
         
         // Carregar dados quando a página carregar
         document.addEventListener("DOMContentLoaded", function() {
+            document.querySelector(".form-pesquisa").addEventListener("submit", function (e) {
+                e.preventDefault(); // impede recarregar a página
+
+                const termo = document.getElementById("pesquisa-lab").value.toLowerCase();
+
+                const filtrados = laboratorios.filter(lab =>
+                    lab.nome.toLowerCase().includes(termo)
+                );
+
+                renderizarLaboratorios(filtrados);
+            });
+
             // Carregar informações do usuário
             fetch('php_action/session-info.php')
                 .then(response => response.json())
