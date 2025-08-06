@@ -17,17 +17,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['user_profile'] = $user['perfil'];
             
             if ($user['perfil'] == 'adm') {
-                header('Location: ../painel-admin-agenda.html');
+                header('Location: ../painel-admin-agenda.php');
             } else {
-                header('Location: ../painel-professor-agenda.html');
+                header('Location: ../painel-professor-agenda.php');
             }
             exit();
         } else {
-            header('Location: ../login.html?error=1');
+            header('Location: ../login.php?error=1');
             exit();
         }
     } catch (PDOException $e) {
-        header('Location: ../login.html?error=2');
+        header('Location: ../login.php?error=2');
         exit();
     }
 }

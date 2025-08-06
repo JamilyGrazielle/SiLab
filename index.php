@@ -8,15 +8,8 @@
     <title>Página Principal - SiLab</title>
   </head>
   <body id="pagina-principal">
-    <header>
-      <div>
-        <img src="Imagens/logo.png" alt="Logo SiLab" />
-      </div>
-
-      <div>
-        <a href="login.html" type="button" class="login-header">Login</a>
-      </div>
-    </header>
+    
+    <?php require_once 'includes/header-principal.php';?>
 
     <main id="principal01">
       <section id="slideshow_section">
@@ -64,9 +57,7 @@
       </section>
     </main>
 
-    <footer>
-      <p>SigLab 2025 &copy; - Todos os direitos reservados.</p>
-    </footer>
+    <?php require_once 'includes/footer.php';?>
 
     <script>
       let slideIndex = 0;

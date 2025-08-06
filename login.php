@@ -24,15 +24,15 @@
       </form>
 
       <div id="login-alternativo">
-        <a href="dashboard-convidado.html">Entre como convidado</a>
+        <a href="painel-convidado.php">Entre como convidado</a>
       </div>
 
     </main>
 
-    <footer id="footer-login">
-        <p>SigLab 2025 &copy; - Todos os direitos reservados.</p>
-    </footer>
-
+    <div id="footer-login">
+      <?php require_once 'includes/footer.php';?>
+    </div>
+    
    <!-- <script>
         const form = document.getElementById('form-login');
         const matriculaInput = document.getElementById('matricula');
@@ -55,7 +55,6 @@
             } 
         });
     </script> -->
-
 
 </body>
 </html>

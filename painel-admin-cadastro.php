@@ -1,3 +1,4 @@
+<?php session_start() ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -187,11 +188,10 @@
     </style>
 </head>
 <body class="painel">
-    <header>
-        <a href="index.html" class="logo-link">
-            <img src="Imagens/logo.png" alt="Logo SiLab" class="logo-imagem">
-        </a>
-    </header>
+
+    <?php require_once 'includes/header-logado.php';?>
+
+    <?php require_once 'includes/sidebar.php';?>
 
     <main class="principal03">
         <h1>Gerenciamento de Laboratórios</h1>
@@ -227,39 +227,7 @@
         </table>
     </main>
 
-    <footer>
-        <p>SigLab 2025 &copy; - Todos os direitos reservados.</p>
-    </footer>
-
-    <aside class="sidebar">
-        <div class="menu">
-            <i class="fas fa-bars" id="menu-sidebar"></i> 
-        </div>
-
-        <div class="perfil">
-            <img src="Imagens/user.png" alt="Avatar do Usuário" class="avatar">
-            <h2 id="nome-usuario">Nome do Usuário</h2>
-            <p id="matricula-usuario">Matrícula: 000000</p>
-        </div>
-        
-        <hr class="separador">
-
-        <nav class="navegacao-principal">
-            <a href="painel-admin-agenda.html" class="nav-link" data-tooltip="Agenda">
-                <i class="fas fa-calendar"></i> <span>Agenda</span>
-            </a>
-            <a href="painel-admin-cadastro.html" class="nav-link" data-tooltip="Cadastro">
-                <i class="fas fa-clipboard"></i> <span>Cadastro</span>
-            </a>
-        </nav>
-
-        <hr class="separador">
-
-        <a href="index.html" class="nav-link botao-sair" data-tooltip="Sair">
-            <i class="fas fa-sign-out-alt"></i>
-            <span>Sair</span>
-        </a>
-    </aside>
+    <?php require_once 'includes/footer.php';?>
 
     <!-- Modal de Cadastro de Laboratório -->
     <div id="modalCadastroLab" class="modal">
@@ -570,7 +538,7 @@
                 .then(data => {
                     if (data.erro) {
                         alert("Sessão expirada. Faça login novamente.");
-                        window.location.href = 'login.html';
+                        window.location.href = 'login.php';
                     } else {
                         document.getElementById('nome-usuario').textContent = data.nome_completo;
                         document.getElementById('matricula-usuario').textContent = 'Matrícula: ' + data.matricula;
@@ -579,7 +547,7 @@
                 .catch(error => {
                     console.error("Erro ao buscar sessão:", error);
                     alert("Erro na autenticação.");
-                    window.location.href = 'login.html';
+                    window.location.href = 'login.php';
                 });
             
             // Carregar laboratórios
