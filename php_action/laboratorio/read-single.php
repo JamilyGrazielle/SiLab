@@ -4,7 +4,7 @@ require_once '../db_connect.php';
 
 header('Content-Type: application/json');
 
-if (!isset($_GET['id']) {
+if (!isset($_GET['id'])) {
     echo json_encode(['error' => 'ID do laboratório não fornecido']);
     exit();
 }
