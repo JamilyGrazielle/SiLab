@@ -1,32 +1,38 @@
 <?php
-session_start();
-require_once 'conexao.php';
+require_once 'db_connect.php';
 
-// Lê dados enviados
+// Iniciar sessão
+session_start();
+
+// Obter dados do formulário
 $matricula = $_POST['matricula'] ?? '';
 $senha = $_POST['senha'] ?? '';
 
-$sql = "SELECT * FROM Usuario WHERE matricula = ?";
-$stmt = $mysqli->prepare($sql);
-$stmt->bind_param("s", $matricula);
-$stmt->execute();
-$result = $stmt->get_result();
-
-if ($result->num_rows === 1) {
-    $usuario = $result->fetch_assoc();
-
-    if (password_verify($senha, $usuario['senha'])) {
-        $_SESSION['user_id'] = $usuario['matricula'];
-        $_SESSION['user_name'] = $usuario['nome_completo'];
-        $_SESSION['user_profile'] = $usuario['perfil'];
-
-        echo json_encode(['success' => true, 'perfil' => $usuario['perfil']]);
-        exit;
-    }
+// Validar entrada
+if (empty($matricula) || empty($senha)) {
+    echo json_encode(['success' => false, 'message' => 'Matrícula e senha são obrigatórias']);
+    exit;
 }
 
-// Login inválido
-http_response_code(401);
-echo json_encode(['success' => false, 'message' => 'Matrícula ou senha invalidas.']);
-exit;
-?>
+try {
+    $sql = "SELECT * FROM Usuario WHERE matricula = :matricula";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['matricula' => $matricula]);
+    $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if ($usuario && password_verify($senha, $usuario['senha'])) {
+        $_SESSION['user_id'] = $usuario['id'];
+        $_SESSION['nome_completo'] = $usuario['nome_completo'];
+        $_SESSION['matricula'] = $usuario['matricula'];
+        $_SESSION['perfil'] = $usuario['perfil'];
+        
+        echo json_encode([
+            'success' => true, 
+            'perfil' => $usuario['perfil']
+        ]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Matrícula ou senha incorretas']);
+    }
+} catch (PDOException $e) {
+    echo json_encode(['success' => false, 'message' => 'Erro no servidor: ' . $e->getMessage()]);
+}

@@ -49,6 +49,8 @@
         <div class="desc_galeria">
           <h3>Agenda Centralizada</h3>
           <p>Visualize todos os agendamentos em um único lugar, evitando conflitos de horário.</p>
+          <!-- Botão adicionado para ver a agenda -->
+          <a href="painel-convidado.php" class="botao-galeria">Ver Agenda</a>
         </div>
       </div>
 

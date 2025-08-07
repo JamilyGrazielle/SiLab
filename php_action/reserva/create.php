@@ -1,33 +1,67 @@
 <?php
 session_start();
-require_once '../db_connect.php';
+require_once __DIR__ . '/../db_connect.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $lab_id = $_POST['laboratorio_id'];
-    $disciplina_id = $_POST['disciplina_id'];
-    $data = $_POST['data'];
-    $horario_id = $_POST['horario_id'];
-    $professor_matricula = $_SESSION['user_id'];
+header('Content-Type: application/json');
 
-    try {
-        // Verificar conflito de reserva
-        $stmt = $pdo->prepare("SELECT id FROM Reserva WHERE laboratorio_id = ? AND data = ? AND horario_id = ?");
-        $stmt->execute([$lab_id, $data, $horario_id]);
-        
-        if ($stmt->fetch()) {
-            echo json_encode(['error' => true, 'message' => 'Já existe uma reserva para este laboratório no horário selecionado']);
-            exit();
-        }
-        
-        // Criar reserva
-        $stmt = $pdo->prepare("INSERT INTO Reserva (professor_matricula, laboratorio_id, disciplina_id, data, horario_id) VALUES (?, ?, ?, ?, ?)");
-        $stmt->execute([$professor_matricula, $lab_id, $disciplina_id, $data, $horario_id]);
-        
-        echo json_encode(['success' => true, 'message' => 'Reserva criada com sucesso!']);
-    } catch (PDOException $e) {
-        echo json_encode(['error' => true, 'message' => 'Erro ao criar reserva: ' . $e->getMessage()]);
-    }
-} else {
-    echo json_encode(['error' => true, 'message' => 'Método não permitido']);
+// Verificar se o usuário está logado (exceto para admin)
+if (!isset($_SESSION['user_id']) || ($_SESSION['perfil'] !== 'adm' && $_SESSION['perfil'] !== 'Professor')) {
+    echo json_encode(['error' => true, 'message' => 'Acesso não autorizado']);
+    exit;
 }
-?>
+
+$data = json_decode(file_get_contents('php://input'), true);
+
+try {
+    // Validar dados
+    if (empty($data['laboratorio_id']) || empty($data['data']) || 
+        empty($data['hora_inicio']) || empty($data['hora_fim']) || 
+        empty($data['motivo'])) {
+        throw new Exception('Todos os campos são obrigatórios');
+    }
+
+    // Verificar conflitos de horário
+    $sql_check = "SELECT id FROM Reserva 
+                 WHERE laboratorio_id = :lab_id 
+                 AND data_reserva = :data_reserva 
+                 AND (
+                    (hora_inicio < :hora_fim AND hora_fim > :hora_inicio) OR 
+                    (hora_inicio < :hora_fim2 AND hora_fim > :hora_fim2) OR 
+                    (hora_inicio >= :hora_inicio2 AND hora_fim <= :hora_fim3)
+                 ) 
+                 AND status = 'confirmada'";
+    
+    $stmt_check = $pdo->prepare($sql_check);
+    $stmt_check->execute([
+        'lab_id' => $data['laboratorio_id'],
+        'data_reserva' => $data['data'],
+        'hora_fim' => $data['hora_fim'],
+        'hora_inicio' => $data['hora_inicio'],
+        'hora_fim2' => $data['hora_fim'],
+        'hora_fim3' => $data['hora_fim'],
+        'hora_inicio2' => $data['hora_inicio']
+    ]);
+    
+    if ($stmt_check->rowCount() > 0) {
+        throw new Exception('Já existe uma reserva confirmada para este horário');
+    }
+
+    // Inserir reserva
+    $sql = "INSERT INTO Reserva 
+            (laboratorio_id, usuario_id, data_reserva, hora_inicio, hora_fim, motivo, status) 
+            VALUES (:lab_id, :user_id, :data_reserva, :hora_inicio, :hora_fim, :motivo, 'confirmada')";
+    
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([
+        'lab_id' => $data['laboratorio_id'],
+        'user_id' => $_SESSION['user_id'],
+        'data_reserva' => $data['data'],
+        'hora_inicio' => $data['hora_inicio'],
+        'hora_fim' => $data['hora_fim'],
+        'motivo' => $data['motivo']
+    ]);
+    
+    echo json_encode(['success' => true, 'message' => 'Reserva criada com sucesso']);
+} catch (Exception $e) {
+    echo json_encode(['error' => true, 'message' => $e->getMessage()]);
+}

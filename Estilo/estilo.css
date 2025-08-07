@@ -674,3 +674,238 @@ main.principal03 h1 {
   transform: scale(1.05); 
 }  */
 
+/* Adicionar ao final do estilo.css */
+
+/* Estilos para agenda */
+.agenda-container {
+  overflow-x: auto;
+  margin-top: 20px;
+}
+
+.tabela-agenda {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+}
+
+.tabela-agenda th, .tabela-agenda td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+  vertical-align: top;
+}
+
+.tabela-agenda th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.hora-coluna {
+  background-color: #e9f7fe;
+  font-weight: bold;
+  width: 120px;
+}
+
+.turno-header {
+  background-color: #d1ecf1;
+  font-weight: bold;
+}
+
+.turno-header td {
+  padding: 10px;
+  text-align: center;
+}
+
+.reservado {
+  background-color: #f8d7da;
+}
+
+.disponivel {
+  background-color: #d4edda;
+}
+
+.fim-de-semana {
+  background-color: #f0f0f0;
+}
+
+.reserva-info {
+  padding: 5px;
+  font-size: 0.85em;
+}
+
+.reserva-lab {
+  font-weight: bold;
+}
+
+.reserva-prof {
+  font-size: 0.8em;
+  margin: 3px 0;
+}
+
+.reserva-acoes {
+  margin-top: 5px;
+}
+
+.botao-reservar {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #28a745;
+  font-size: 1.2em;
+}
+
+.filtros-agenda {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.form-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: flex-end;
+}
+
+.filtro-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.botao-filtrar, .botao-nova-reserva {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.botao-filtrar {
+  background-color: #6c757d;
+  color: white;
+}
+
+.botao-nova-reserva {
+  background-color: #28a745;
+  color: white;
+}
+
+/* Modal de reserva */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-conteudo {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 600px;
+  border-radius: 8px;
+  position: relative;
+}
+
+.fechar {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  position: absolute;
+  top: 10px;
+  right: 15px;
+}
+
+.fechar:hover,
+.fechar:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.form-grupo {
+  margin-bottom: 15px;
+}
+
+.form-grupo label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-grupo input,
+.form-grupo select,
+.form-grupo textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.form-grupo textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-grupo-duplo {
+  display: flex;
+  gap: 15px;
+}
+
+.form-grupo-duplo > div {
+  flex: 1;
+}
+
+.botoes-modal {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.botao-cancelar {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.botao-salvar {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Estilo para o botão na galeria */
+.botao-galeria {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 15px;
+  background-color: #38A169;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.botao-galeria:hover {
+  background-color: #2d8555;
+}

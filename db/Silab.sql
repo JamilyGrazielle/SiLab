@@ -3,7 +3,8 @@ create database silab;
 use silab;
 
 CREATE TABLE Usuario (
-    matricula VARCHAR(20) PRIMARY KEY,
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    matricula VARCHAR(20),
     nome_completo VARCHAR(70),
     senha VARCHAR(255),
     status enum('ativo', 'inativo'),
@@ -60,18 +61,15 @@ INSERT INTO Horario (descricao) VALUES
 
 CREATE TABLE Reserva (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    professor_matricula VARCHAR(20),
-    laboratorio_id INT,
-    disciplina_id INT,
-    data DATE NOT NULL,
-    horario_id INT,
-    
-    FOREIGN KEY (professor_matricula) REFERENCES Usuario(matricula),
+    laboratorio_id INT NOT NULL,
+    usuario_id INT NOT NULL,
+    data_reserva DATE NOT NULL,
+    hora_inicio TIME NOT NULL,
+    hora_fim TIME NOT NULL,
+    motivo TEXT,
+    status ENUM('pendente', 'confirmada', 'cancelada') DEFAULT 'pendente',
     FOREIGN KEY (laboratorio_id) REFERENCES Laboratorio(id),
-    FOREIGN KEY (disciplina_id) REFERENCES Disciplina(id),
-    FOREIGN KEY (horario_id) REFERENCES Horario(id),
-
-    UNIQUE (laboratorio_id, data, horario_id) -- impede conflito de reservas
+    FOREIGN KEY (usuario_id) REFERENCES Usuario(id)
 );
 
 
