@@ -1,7 +1,8 @@
 <?php
-include('conexao.php');
+// Usa o mesmo arquivo de conexão do projeto (usando PDO)
+require_once __DIR__ . '/db_connect.php';
 
-// Array com todos os usuários
+// Lista de usuários a serem inseridos
 $usuarios = [
     [
         'nome' => 'Jamily Grazielle Sousa Maciel',
@@ -87,40 +88,32 @@ $usuarios = [
 
 // Loop para inserir cada usuário
 foreach ($usuarios as $usuario) {
-    // Extrai os últimos 2 dígitos da matrícula
-    $ultimosDigitos = substr($usuario['matricula'], -2);
-    
-    // Pega o primeiro nome (antes do primeiro espaço)
-    $primeiroNome = explode(' ', $usuario['nome'])[0];
-    
-    // Cria a senha no formato "PrimeiroNome@Ultimos2Digitos"
-    $senha = $primeiroNome . '@' . $ultimosDigitos;
-    
-    // Gera o hash da senha
-    $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
-    
-    // Prepara a query SQL
-    $sql = "INSERT INTO Usuario (matricula, nome_completo, senha, status, perfil)
-            VALUES (?, ?, ?, 'ativo', ?)";
-    
-    // Usando prepared statements para segurança
-    $stmt = $mysqli->prepare($sql);
-    $stmt->bind_param("ssss", 
-        $usuario['matricula'],
-        $usuario['nome'],
-        $senha_hash,
-        $usuario['perfil']
-    );
-    
-    // Executa e verifica
-    if ($stmt->execute()) {
-        echo "Usuário {$usuario['nome']} cadastrado com sucesso! Senha: $senha<br>";
-    } else {
-        echo "Erro ao cadastrar {$usuario['nome']}: " . $mysqli->error . "<br>";
-    }
-    
-    $stmt->close();
-}
+    try {
+        // Extrai os dois últimos dígitos da matrícula
+        $ultimosDigitos = substr($usuario['matricula'], -2);
 
-$mysqli->close();
+        // Pega o primeiro nome
+        $primeiroNome = explode(' ', $usuario['nome'])[0];
+
+        // Gera a senha no formato desejado
+        $senha = $primeiroNome . '@' . $ultimosDigitos;
+        $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
+
+        // Prepara o SQL
+        $sql = "INSERT INTO Usuario (matricula, nome_completo, senha, status, perfil)
+                VALUES (:matricula, :nome_completo, :senha, 'ativo', :perfil)";
+        
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':matricula', $usuario['matricula']);
+        $stmt->bindParam(':nome_completo', $usuario['nome']);
+        $stmt->bindParam(':senha', $senha_hash);
+        $stmt->bindParam(':perfil', $usuario['perfil']);
+
+        $stmt->execute();
+        echo "Usuário <strong>{$usuario['nome']}</strong> cadastrado com sucesso! Senha: <code>$senha</code><br>";
+
+    } catch (PDOException $e) {
+        echo "❌ Erro ao cadastrar <strong>{$usuario['nome']}</strong>: " . $e->getMessage() . "<br>";
+    }
+}
 ?>

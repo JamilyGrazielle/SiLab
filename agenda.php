@@ -8,8 +8,8 @@ $modo_convidado = isset($modo_convidado) ? $modo_convidado : false;
 
 // Filtros
 $filtro_lab = isset($_GET['laboratorio']) ? intval($_GET['laboratorio']) : 0;
-$filtro_data = isset($_GET['data']) ? $_GET['data'] : date('Y-m-d');
-$semana = isset($_GET['semana']) ? $_GET['semana'] : date('Y-\WW');
+$filtro_data = isset($_GET['data']) ? $_GET['data'] : date('d-m-Y');
+$semana = isset($_GET['semana']) ? $_GET['semana'] : date('WW-\Y');
 
 // Converter a semana em data de início (segunda-feira)
 $inicio_semana = strtotime($semana . '1');
@@ -336,6 +336,7 @@ document.querySelectorAll('.botao-cancelar').forEach(button => {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json'
                     }
+
                 });
                 
                 const result = await response.json();

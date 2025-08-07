@@ -13,7 +13,7 @@ CREATE TABLE Usuario (
 
 CREATE TABLE Laboratorio (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
+    nome VARCHAR(100) UNIQUE NOT NULL,
     capacidade INT NOT NULL
 );
 

@@ -1,43 +1,45 @@
 <?php
+// Define o cabeçalho para retornar JSON
 header('Content-Type: application/json');
 
-require_once '../conexao.php';
+// Importa a conexão com o banco de dados
+require_once '../db_connect.php';
 
-$data = json_decode(file_get_contents("php://input"), true);
+try {
+    // Recebe os dados em JSON
+    $data = json_decode(file_get_contents('php://input'), true);
 
-if (!isset($data['id'])) {
-    http_response_code(400);
-    echo json_encode(['error' => true, 'message' => 'ID do laboratório não fornecido']);
-    exit;
+    // Verifica se o ID foi enviado
+    if (!isset($data['id'])) {
+        echo json_encode([
+            'error' => true,
+            'message' => 'ID do laboratório não foi fornecido.'
+        ]);
+        exit;
+    }
+
+    $id = intval($data['id']);
+
+    // Prepara e executa a exclusão
+    $stmt = $pdo->prepare("DELETE FROM laboratorio WHERE id = ?");
+    $stmt->execute([$id]);
+
+    echo json_encode([
+        'error' => false,
+        'message' => 'Laboratório excluído com sucesso.'
+    ]);
+
+} catch (PDOException $e) {
+    // Verifica se o erro é de integridade (laboratório com reservas)
+    if ($e->getCode() === '23000') {
+        echo json_encode([
+            'error' => true,
+            'message' => 'Este laboratório não pode ser excluído pois possui reservas associadas.'
+        ]);
+    } else {
+        echo json_encode([
+            'error' => true,
+            'message' => 'Erro ao excluir laboratório: ' . $e->getMessage()
+        ]);
+    }
 }
-
-$id = intval($data['id']);
-
-// Verifica se o laboratório existe
-$sqlCheck = "SELECT * FROM Laboratorio WHERE id = ?";
-$stmtCheck = $mysqli->prepare($sqlCheck);
-$stmtCheck->bind_param("i", $id);
-$stmtCheck->execute();
-$resultCheck = $stmtCheck->get_result();
-
-if ($resultCheck->num_rows === 0) {
-    http_response_code(404);
-    echo json_encode(['error' => true, 'message' => 'Laboratório não encontrado']);
-    exit;
-}
-
-// Realiza a exclusão
-$sql = "DELETE FROM Laboratorio WHERE id = ?";
-$stmt = $mysqli->prepare($sql);
-$stmt->bind_param("i", $id);
-
-if ($stmt->execute()) {
-    echo json_encode(['error' => false, 'message' => 'Laboratório excluído com sucesso']);
-} else {
-    http_response_code(500);
-    echo json_encode(['error' => true, 'message' => 'Erro ao excluir o laboratório: ' . $stmt->error]);
-}
-
-$stmt->close();
-$mysqli->close();
-?>
