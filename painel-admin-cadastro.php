@@ -220,7 +220,7 @@
             color: white;
         }
 
-        /* Estilo do spinner */
+        
         .loading {
             display: inline-block;
             animation: spin 1s linear infinite;
@@ -318,25 +318,25 @@
     </div>
 
     <script>
-        // Variáveis globais
+        
         let equipamentoIndex = 0;
         let laboratorios = [];
         
-        // Funções do Modal
+        
         function abrirModal(labId = null) {
             const modal = document.getElementById("modalCadastroLab");
             const form = document.getElementById("formLab");
             const tituloModal = document.getElementById("modal-titulo");
             
-            // Resetar formulário
+            
             form.reset();
             document.getElementById("equipamentos-container").innerHTML = "";
             equipamentoIndex = 0;
             
-            // Configurar título
+            
             tituloModal.textContent = labId ? "Editar Laboratório" : "Cadastrar novo laboratório";
             
-            // Se for edição, carregar dados do laboratório
+            
             if (labId) {
                 carregarLaboratorioParaEdicao(labId);
             }
@@ -357,7 +357,7 @@
                 document.getElementById("nome").value = laboratorio.nome;
                 document.getElementById("capacidade").value = laboratorio.capacidade;
                 
-                // Adicionar equipamentos
+                
                 if (laboratorio.equipamentos && laboratorio.equipamentos.length > 0) {
                     laboratorio.equipamentos.forEach(equip => {
                         adicionarEquipamento(equip.nome, equip.quantidade);
@@ -396,7 +396,7 @@
             equipamentoIndex++;
         }
         
-        // Função para carregar laboratórios com tratamento de erro aprimorado
+        
         async function carregarLaboratorios() {
             const tbody = document.getElementById("tabela-corpo");
             tbody.innerHTML = `<tr><td colspan="4" style="text-align: center;"><i class="fas fa-spinner loading"></i> Carregando...</td></tr>`;
@@ -404,14 +404,14 @@
             try {
                 const response = await fetch('php_action/laboratorio/read.php');
                 
-                // Verificar se a resposta está vazia
+                
                 if (response.status === 204) {
                     laboratorios = [];
                     renderizarLaboratorios();
                     return;
                 }
                 
-                // Tentar parsear como JSON
+                
                 const result = await response.json();
                 
                 if (!response.ok || !result.success) {
@@ -424,7 +424,7 @@
             } catch (error) {
                 console.error("Erro ao carregar laboratórios:", error);
                 
-                // Verificar se é erro de rede ou de servidor
+                
                 const erroMsg = error.message.includes('Failed to fetch') 
                     ? 'Erro de conexão com o servidor' 
                     : error.message;
@@ -481,7 +481,7 @@
         }
 
         
-        // Função para excluir laboratório
+        
         async function excluirLaboratorio(id) {
             if (confirm("Tem certeza que deseja excluir este laboratório?")) {
                 try {
@@ -500,8 +500,8 @@
                         throw new Error(result.message);
                     }
                     
-                    // Atualizar lista local
-                    carregarLaboratorios(); // Atualiza a tabela com os dados mais recentes
+                    
+                    carregarLaboratorios(); 
                     fecharModal();
                     alert(result.message);
                 } catch (error) {
@@ -511,14 +511,14 @@
             }
         }
         
-        // Manipulador do formulário
+        
         document.getElementById("formLab").addEventListener("submit", async function(e) {
             e.preventDefault();
             
             const formData = new FormData(this);
             const equipamentos = [];
             
-            // Coletar equipamentos
+            
             document.querySelectorAll(".linha-equipamento").forEach(row => {
                 const nome = row.querySelector('input[type="text"]').value;
                 const quantidade = row.querySelector('input[type="number"]').value;
@@ -537,7 +537,7 @@
             };
             
             try {
-                // Verificar se é edição ou criação
+                
                 const isEdicao = this.dataset.id;
                 const url = isEdicao 
                     ? 'php_action/laboratorio/update.php' 
@@ -563,7 +563,7 @@
                 }
                 
                 if (!isEdicao && result.id) {
-                    // Após o cadastro, recarrega a lista do backend
+                    
                     await carregarLaboratorios();
                 } else if (isEdicao) {
                     await carregarLaboratorios();
@@ -578,7 +578,7 @@
             }
         });
         
-        // Fechar modal ao clicar fora
+        
         window.onclick = function(event) {
             const modal = document.getElementById("modalCadastroLab");
             if (event.target === modal) {
@@ -586,10 +586,10 @@
             }
         }
         
-        // Carregar dados quando a página carregar
+        
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelector(".form-pesquisa").addEventListener("submit", function (e) {
-                e.preventDefault(); // impede recarregar a página
+                e.preventDefault(); 
 
                 const termo = document.getElementById("pesquisa-lab").value.toLowerCase();
 
@@ -600,7 +600,7 @@
                 renderizarLaboratorios(filtrados);
             });
 
-            // Carregar informações do usuário
+            
             fetch('php_action/session-info.php')
                 .then(response => response.json())
                 .then(data => {
@@ -618,10 +618,10 @@
                     window.location.href = 'login.php';
                 });
             
-            // Carregar laboratórios
+            
             carregarLaboratorios();
             
-            // Configurar sidebar
+            
             const toggleButton = document.getElementById('menu-sidebar');
             const sidebar = document.querySelector('.sidebar');
             
