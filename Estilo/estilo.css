@@ -909,3 +909,37 @@ main.principal03 h1 {
 .botao-galeria:hover {
   background-color: #2d8555;
 }
+
+/* Botão de detalhes */
+.botao-detalhes {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  margin-top: 5px;
+  cursor: pointer;
+  font-size: 0.8em;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.botao-detalhes:hover {
+  background-color: #2980b9;
+}
+
+/* Modal de detalhes */
+#detalhes-reserva-conteudo p {
+  margin: 10px 0;
+  line-height: 1.5;
+}
+
+#detalhes-motivo {
+  white-space: pre-line; /* Mantém quebras de linha */
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-radius: 4px;
+  display: block;
+  margin-top: 5px;
+}

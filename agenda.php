@@ -48,7 +48,7 @@ for ($i = 0; $i < 7; $i++) {
     $dia = date('Y-m-d', $dias_semana[$i]);
     $reservas_por_dia[$i] = [];
 
-    $sql = "SELECT r.*, l.nome as lab_nome, u.nome_completo as usuario_nome 
+    $sql = "SELECT r.*, l.nome as lab_nome, u.nome_completo as usuario_nome, r.motivo 
             FROM Reserva r
             JOIN Laboratorio l ON r.laboratorio_id = l.id
             JOIN Usuario u ON r.usuario_id = u.id
@@ -92,6 +92,27 @@ function esta_reservado($reservas, $hora_inicio, $hora_fim) {
     }
     return false;
 }
+
+// Obter laboratórios com reservas na semana (para a nova seção de botões)
+$data_inicio_semana = date('Y-m-d', $inicio_semana);
+$data_fim_semana = date('Y-m-d', strtotime('+6 days', $inicio_semana));
+
+$labs_reservados = [];
+if ($filtro_lab == 0) {
+    try {
+        $sql_labs_reservados = "SELECT DISTINCT l.id, l.nome 
+                                FROM Reserva r 
+                                JOIN Laboratorio l ON r.laboratorio_id = l.id 
+                                WHERE r.data_reserva BETWEEN ? AND ?
+                                AND r.status = 'confirmada'";
+        $stmt = $pdo->prepare($sql_labs_reservados);
+        $stmt->execute([$data_inicio_semana, $data_fim_semana]);
+        $labs_reservados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        // Não interrompe a execução, apenas não mostra os botões
+        error_log("Erro ao buscar laboratórios reservados: " . $e->getMessage());
+    }
+}
 ?>
 
 <!-- Filtros -->
@@ -125,6 +146,20 @@ function esta_reservado($reservas, $hora_inicio, $hora_fim) {
         <?php endif; ?>
     </form>
 </div>
+
+<!-- Lista de laboratórios com reservas (nova seção) -->
+<?php if ($filtro_lab == 0 && !empty($labs_reservados)): ?>
+    <div class="labs-disponiveis-container">
+        <h3>Laboratórios com reservas nesta semana:</h3>
+        <div class="lista-labs">
+            <?php foreach ($labs_reservados as $lab): ?>
+                <a href="?laboratorio=<?= $lab['id'] ?>&semana=<?= urlencode($semana) ?>" class="botao-lab">
+                    <?= htmlspecialchars($lab['nome']) ?>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+<?php endif; ?>
 
 <!-- Tabela de Agenda -->
 <div class="agenda-container">
@@ -177,6 +212,16 @@ function esta_reservado($reservas, $hora_inicio, $hora_fim) {
                                         <div class="reserva-prof">
                                             <?= $modo_convidado ? 'Reservado' : $reserva['usuario_nome'] ?>
                                         </div>
+                                        <!-- Botão para ver detalhes -->
+                                        <button class="botao-detalhes" 
+                                                data-lab="<?= htmlspecialchars($reserva['lab_nome']) ?>" 
+                                                data-professor="<?= htmlspecialchars($reserva['usuario_nome']) ?>" 
+                                                data-dia="<?= $dia ?>"
+                                                data-hora-inicio="<?= substr($hora_atual, 0, 5) ?>"
+                                                data-hora-fim="<?= substr($hora_fim, 0, 5) ?>"
+                                                data-motivo="<?= htmlspecialchars($reserva['motivo']) ?>">
+                                            <i class="fas fa-info-circle"></i> Detalhes
+                                        </button>
                                         <?php if ($modo_admin || $modo_professor): ?>
                                             <div class="reserva-acoes">
                                                 <button class="botao-acao botao-cancelar" 
@@ -207,6 +252,28 @@ function esta_reservado($reservas, $hora_inicio, $hora_fim) {
             <?php endforeach; ?>
         </tbody>
     </table>
+</div>
+
+<!-- Modal de Detalhes da Reserva com Laboratórios Disponíveis -->
+<div id="modalDetalhesReserva" class="modal">
+    <div class="modal-conteudo">
+        <span class="fechar" onclick="fecharModalDetalhes()">&times;</span>
+        <h2>Detalhes da Reserva</h2>
+        <div id="detalhes-reserva-conteudo">
+            <p><strong>Laboratório:</strong> <span id="detalhes-lab"></span></p>
+            <p><strong>Professor:</strong> <span id="detalhes-professor"></span></p>
+            <p><strong>Data:</strong> <span id="detalhes-data"></span></p>
+            <p><strong>Horário:</strong> <span id="detalhes-horario"></span></p>
+            <p><strong>Motivo:</strong> <span id="detalhes-motivo"></span></p>
+            
+            <div class="labs-disponiveis-section">
+                <h3>Laboratórios Disponíveis neste Horário</h3>
+                <div id="lista-labs-disponiveis" class="lista-labs-disponiveis">
+                    <!-- Conteúdo será preenchido via JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Modal de Reserva -->
@@ -255,6 +322,150 @@ function esta_reservado($reservas, $hora_inicio, $hora_fim) {
     </div>
 </div>
 
+<style>
+    /* Laboratórios disponíveis */
+    .labs-disponiveis-container {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 15px 0;
+        border: 1px solid #dee2e6;
+    }
+
+    .labs-disponiveis-container h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        color: #495057;
+        font-size: 1.1em;
+    }
+
+    .lista-labs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .botao-lab {
+        display: inline-block;
+        padding: 8px 15px;
+        background-color: #e9ecef;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        color: #495057;
+        text-decoration: none;
+        font-size: 0.9em;
+        transition: all 0.2s ease;
+    }
+
+    .botao-lab:hover {
+        background-color: #d1e7ff;
+        border-color: #86b7fe;
+        transform: translateY(-2px);
+    }
+
+    /* Botão de detalhes */
+    .botao-detalhes {
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 5px 10px;
+        margin-top: 5px;
+        cursor: pointer;
+        font-size: 0.8em;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .botao-detalhes:hover {
+        background-color: #2980b9;
+    }
+
+    /* Modal de detalhes */
+    #detalhes-reserva-conteudo p {
+        margin: 10px 0;
+        line-height: 1.5;
+    }
+
+    #detalhes-motivo {
+        white-space: pre-line;
+        background-color: #f9f9f9;
+        padding: 10px;
+        border-radius: 4px;
+        display: block;
+        margin-top: 5px;
+        border: 1px solid #eee;
+    }
+    
+    /* Estilos para a seção de laboratórios disponíveis no modal */
+    .labs-disponiveis-section {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 20px;
+        border: 1px solid #dee2e6;
+    }
+    
+    .labs-disponiveis-section h3 {
+        margin-top: 0;
+        color: #495057;
+        border-bottom: 1px solid #dee2e6;
+        padding-bottom: 10px;
+    }
+    
+    .lista-labs-disponiveis {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+    
+    .lab-disponivel-item {
+        background-color: white;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        padding: 12px;
+        margin-bottom: 10px;
+        transition: all 0.2s ease;
+    }
+    
+    .lab-disponivel-item:hover {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transform: translateY(-2px);
+    }
+    
+    .lab-disponivel-item h4 {
+        margin-top: 0;
+        margin-bottom: 8px;
+        color: #1a73e8;
+    }
+    
+    .lab-info {
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .lab-capacidade {
+        background-color: #e8f0fe;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 0.85em;
+    }
+    
+    .lab-equipamentos {
+        font-size: 0.9em;
+        color: #5f6368;
+        margin-top: 8px;
+    }
+    
+    .qtd-equip {
+        background-color: #e8f0fe;
+        padding: 2px 6px;
+        border-radius: 10px;
+        font-size: 0.85em;
+        margin-left: 3px;
+    }
+</style>
+
 <script>
 // Funções para manipulação da agenda
 function abrirModalReserva(dia = '', hora_inicio = '', hora_fim = '') {
@@ -279,6 +490,106 @@ function fecharModalReserva() {
     document.getElementById("modalReserva").style.display = "none";
 }
 
+// Função para buscar laboratórios disponíveis
+async function buscarLabsDisponiveis(dia, hora_inicio, hora_fim) {
+    try {
+        const response = await fetch(`php_action/disponibilidade.php?dia=${dia}&hora_inicio=${hora_inicio}&hora_fim=${hora_fim}`);
+        const data = await response.json();
+        
+        if (data.error) {
+            throw new Error(data.message);
+        }
+        
+        return data.disponiveis;
+    } catch (error) {
+        console.error("Erro ao buscar laboratórios disponíveis:", error);
+        return [];
+    }
+}
+
+// Função para formatar a lista de equipamentos
+function formatarEquipamentos(equipamentos) {
+    if (!equipamentos) return 'Nenhum equipamento listado';
+    
+    // Formato atual: "Monitor (10), Teclado (20)"
+    const partes = equipamentos.split(', ');
+    if (partes.length === 0) return 'Nenhum equipamento listado';
+    
+    let html = '';
+    partes.forEach(eq => {
+        const match = eq.match(/(.*) \((\d+)\)/);
+        if (match) {
+            const nome = match[1];
+            const qtd = match[2];
+            html += `<div>${nome} <span class="qtd-equip">${qtd}</span></div>`;
+        } else {
+            html += `<div>${eq}</div>`;
+        }
+    });
+    
+    return html;
+}
+
+// Função para mostrar laboratórios disponíveis
+async function mostrarLabsDisponiveis(detalhes) {
+    const container = document.getElementById('lista-labs-disponiveis');
+    container.innerHTML = '<p>Carregando laboratórios disponíveis...</p>';
+    
+    try {
+        const disponiveis = await buscarLabsDisponiveis(
+            detalhes.dia, 
+            detalhes.hora_inicio + ':00', 
+            detalhes.hora_fim + ':00'
+        );
+        
+        if (disponiveis.length === 0) {
+            container.innerHTML = '<p>Nenhum laboratório disponível neste horário</p>';
+            return;
+        }
+        
+        let html = '';
+        disponiveis.forEach(lab => {
+            html += `
+                <div class="lab-disponivel-item">
+                    <h4>${lab.nome}</h4>
+                    <div class="lab-info">
+                        <div class="lab-capacidade">Capacidade: ${lab.capacidade} pessoas</div>
+                    </div>
+                    <div class="lab-equipamentos">
+                        <strong>Equipamentos:</strong> 
+                        ${formatarEquipamentos(lab.equipamentos)}
+                    </div>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = html;
+    } catch (error) {
+        container.innerHTML = `<p class="error">Erro ao carregar laboratórios: ${error.message}</p>`;
+    }
+}
+
+// Funções para o modal de detalhes
+function abrirModalDetalhes(detalhes) {
+    const modal = document.getElementById("modalDetalhesReserva");
+    
+    // Preencher detalhes da reserva
+    document.getElementById("detalhes-lab").textContent = detalhes.lab;
+    document.getElementById("detalhes-professor").textContent = detalhes.professor;
+    document.getElementById("detalhes-data").textContent = detalhes.dia;
+    document.getElementById("detalhes-horario").textContent = `${detalhes.hora_inicio} - ${detalhes.hora_fim}`;
+    document.getElementById("detalhes-motivo").textContent = detalhes.motivo;
+    
+    // Buscar e mostrar laboratórios disponíveis
+    mostrarLabsDisponiveis(detalhes);
+    
+    modal.style.display = "block";
+}
+
+function fecharModalDetalhes() {
+    document.getElementById("modalDetalhesReserva").style.display = "none";
+}
+
 // Event listeners para os botões de reserva
 document.querySelectorAll('.botao-reservar').forEach(button => {
     button.addEventListener('click', function() {
@@ -287,6 +598,35 @@ document.querySelectorAll('.botao-reservar').forEach(button => {
         const hora_fim = this.getAttribute('data-hora-fim');
         abrirModalReserva(dia, hora_inicio, hora_fim);
     });
+});
+
+// Event listeners para os botões de detalhes
+document.querySelectorAll('.botao-detalhes').forEach(button => {
+    button.addEventListener('click', function() {
+        const detalhes = {
+            lab: this.getAttribute('data-lab'),
+            professor: this.getAttribute('data-professor'),
+            dia: this.getAttribute('data-dia'),
+            hora_inicio: this.getAttribute('data-hora-inicio'),
+            hora_fim: this.getAttribute('data-hora-fim'),
+            motivo: this.getAttribute('data-motivo')
+        };
+        abrirModalDetalhes(detalhes);
+    });
+});
+
+// Fechar modais ao clicar fora do conteúdo
+window.addEventListener('click', function(event) {
+    const modalReserva = document.getElementById("modalReserva");
+    const modalDetalhes = document.getElementById("modalDetalhesReserva");
+    
+    if (event.target === modalReserva) {
+        fecharModalReserva();
+    }
+    
+    if (event.target === modalDetalhes) {
+        fecharModalDetalhes();
+    }
 });
 
 // Event listener para o formulário de reserva
@@ -336,7 +676,6 @@ document.querySelectorAll('.botao-cancelar').forEach(button => {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json'
                     }
-
                 });
                 
                 const result = await response.json();

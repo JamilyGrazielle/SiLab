@@ -12,25 +12,21 @@
     <hr class="separador">
 
     <nav class="navegacao-principal">
-        
-        <?php if (isset($_SESSION['user_profile']) && $_SESSION['user_profile'] == 'adm'): ?>
-            
+        <?php if (isset($_SESSION['perfil']) && $_SESSION['perfil'] == 'adm'): ?>
             <a href="painel-admin-agenda.php" class="nav-link" data-tooltip="Agenda Geral">
                 <i class="fas fa-calendar-alt"></i> <span>Agenda</span>
             </a>
             <a href="painel-admin-cadastro.php" class="nav-link" data-tooltip="Cadastro">
                 <i class="fas fa-clipboard"></i> <span>Laboratórios</span>
             </a>
-            <?php elseif (isset($_SESSION['user_profile']) && $_SESSION['user_profile'] == 'Professor'): ?>
-            
+        <?php elseif (isset($_SESSION['perfil']) && $_SESSION['perfil'] == 'Professor'): ?>
             <a href="painel-professor-agenda.php" class="nav-link" data-tooltip="Agenda Geral">
                 <i class="fas fa-calendar-alt"></i> <span>Agenda</span>
             </a>
             <a href="painel-professor-reserva.php" class="nav-link" data-tooltip="Reserva">
                 <i class="fas fa-bookmark"></i> <span>Reserva</span>
             </a>
-            <?php endif; ?>
-
+        <?php endif; ?>
     </nav>
 
     <hr class="separador">
