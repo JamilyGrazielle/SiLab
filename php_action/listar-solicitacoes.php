@@ -1,22 +1,23 @@
 <?php
-require_once __DIR__ . '/../db_connect.php';
+require_once __DIR__ . '/db_connect.php';
 
 header('Content-Type: application/json');
 
 try {
-    // Buscar solicitações pendentes
-    $sql = "SELECT * FROM Usuario 
-    WHERE perfil = 'Professor' 
-    AND status = 'pendente'";
-
+    $sql = "SELECT id, nome_completo, matricula, email, 
+            DATE_FORMAT(data_solicitacao, '%d/%m/%Y %H:%i') AS data_formatada 
+            FROM SolicitacaoCadastro 
+            WHERE status = 'pendente'";
     
-    $stmt = $pdo->query($sql);
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    
     $solicitacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     echo json_encode($solicitacoes);
 } catch (PDOException $e) {
-    // Log de erro para depuração
-    error_log('Erro em listar-solicitacoes: ' . $e->getMessage());
-    
-    echo json_encode([]);
+    echo json_encode([
+        'error' => true,
+        'message' => 'Erro ao buscar solicitações: ' . $e->getMessage()
+    ]);
 }

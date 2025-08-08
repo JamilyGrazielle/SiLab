@@ -155,7 +155,7 @@
                 formData.append('email', email);
                 formData.append('senha', senha);
                 
-                const response = await fetch('php_action/solicitar-cadastro.php', {
+                const response = await fetch('php_action/solicitar_cadastro.php', {
                     method: 'POST',
                     body: formData
                 });

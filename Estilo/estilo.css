@@ -943,3 +943,17 @@ main.principal03 h1 {
   display: block;
   margin-top: 5px;
 }
+
+.painel.sidebar-recolhida .principal03 {
+  margin-left: 60px;
+  transition: margin-left 0.3s;
+}
+
+.sidebar.recolhida {
+  width: 50px;
+}
+
+.sidebar.recolhida .nav-link i {
+  font-size: 1.5em;
+  margin-right: 0;
+}
