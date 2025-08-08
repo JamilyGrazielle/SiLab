@@ -957,3 +957,65 @@ main.principal03 h1 {
   font-size: 1.5em;
   margin-right: 0;
 }
+
+/* Reduzir tamanho dos botões */
+.botao-acao {
+  padding: 5px 8px;
+  font-size: 12px;
+}
+
+/* Melhorar espaçamento */
+.acoes-cell {
+  display: flex;
+  gap: 5px;
+}
+
+/* Ícones menores */
+.botao-acao i {
+  font-size: 12px;
+}
+
+/* Destaque para item ativo */
+.nav-link.active {
+  background-color: #2c5282 !important;
+  color: white !important;
+  border-color: #2a4365 !important;
+}
+
+.nav-link.active i {
+  color: white !important;
+}
+
+/* Destaque para item ativo */
+.nav-link.active {
+  background-color: #2c5282 !important;
+  color: white !important;
+  border-color: #2a4365 !important;
+}
+
+.nav-link.active i {
+  color: white !important;
+}
+
+/* Sidebar recolhida */
+.sidebar.recolhida {
+  width: 50px;
+}
+
+.sidebar.recolhida .nav-link span {
+  display: none;
+}
+
+.sidebar.recolhida .perfil h2,
+.sidebar.recolhida .perfil p {
+  display: none;
+}
+
+.sidebar.recolhida .botao-sair span {
+  display: none;
+}
+
+.sidebar.recolhida .nav-link {
+  padding: 10px 0;
+  justify-content: center;
+}

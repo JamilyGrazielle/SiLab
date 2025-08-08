@@ -40,15 +40,15 @@ $titulo_pagina = "Solicitações de Cadastro - SiLab";
         
         .acoes-cell {
             display: flex;
-            gap: 10px;
+            gap: 5px;
         }
         
         .botao-acao {
-            padding: 6px 10px;
+            padding: 5px 8px;
             border-radius: 4px;
             border: none;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 12px;
             display: flex;
             align-items: center;
             gap: 5px;
@@ -107,6 +107,17 @@ $titulo_pagina = "Solicitações de Cadastro - SiLab";
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Carregar informações do usuário
+            fetch('php_action/session-info.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.erro) {
+                        document.getElementById('nome-usuario').textContent = data.nome_completo;
+                        document.getElementById('matricula-usuario').textContent = 'Matrícula: ' + data.matricula;
+                    }
+                })
+                .catch(error => console.error('Erro ao carregar sessão:', error));
+
             carregarSolicitacoes();
             
             // Configurar sidebar
@@ -140,13 +151,13 @@ $titulo_pagina = "Solicitações de Cadastro - SiLab";
                             <td>${sol.nome_completo}</td>
                             <td>${sol.matricula}</td>
                             <td>${sol.email}</td>
-                            <td>${sol.data_solicitacao}</td>
+                            <td>${sol.data_solicitacao_formatada || 'N/A'}</td>
                             <td class="acoes-cell">
                                 <button class="botao-acao botao-aprovar" onclick="aprovarCadastro(${sol.id})">
-                                    <i class="fas fa-check"></i> Aprovar
+                                    <i class="fas fa-check"></i>
                                 </button>
                                 <button class="botao-acao botao-rejeitar" onclick="rejeitarCadastro(${sol.id})">
-                                    <i class="fas fa-times"></i> Rejeitar
+                                    <i class="fas fa-times"></i>
                                 </button>
                             </td>
                         </tr>
