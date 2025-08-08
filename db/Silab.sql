@@ -6,6 +6,7 @@ CREATE TABLE Usuario (
 	id INT AUTO_INCREMENT PRIMARY KEY,
     matricula VARCHAR(20) UNIQUE,
     nome_completo VARCHAR(70),
+    email VARCHAR(255),
     senha VARCHAR(255),
     status ENUM('pendente', 'aprovado', 'rejeitada') NOT NULL DEFAULT 'pendente',
     perfil ENUM('Professor', 'adm')

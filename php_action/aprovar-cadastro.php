@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../db_connect.php';
+require_once __DIR__ . '/db_connect.php';
 
 header('Content-Type: application/json');
 
@@ -31,7 +31,7 @@ try {
     // Inserir novo usuário
     $sql = "INSERT INTO Usuario 
             (matricula, nome_completo, email, senha, perfil, status) 
-            VALUES (?, ?, ?, ?, 'Professor', 'ativo')";
+            VALUES (?, ?, ?, ?, 'Professor', 'aprovado')";
             
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
@@ -42,7 +42,7 @@ try {
     ]);
     
     // Atualizar status da solicitação
-    $stmt = $pdo->prepare("UPDATE Usuario SET status = 'aprovado' WHERE id = ?");
+    $stmt = $pdo->prepare("UPDATE SolicitacaoCadastro SET status = 'aprovado' WHERE id = ?");
     $stmt->execute([$id]);
     
     echo json_encode([
@@ -50,7 +50,6 @@ try {
         'message' => 'Cadastro aprovado com sucesso!'
     ]);
 } catch (PDOException $e) {
-    // Log de erro para depuração
     error_log('Erro em aprovar-cadastro: ' . $e->getMessage());
     
     echo json_encode([

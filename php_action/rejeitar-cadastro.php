@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../db_connect.php';
+require_once __DIR__ . '/db_connect.php';
 
 header('Content-Type: application/json');
 
@@ -16,15 +16,14 @@ if (!$id) {
 
 try {
     // Atualizar status da solicitação
-    $stmt = $pdo->prepare("UPDATE Usuario SET status = 'rejeitado' WHERE id = ?");
+    $stmt = $pdo->prepare("UPDATE SolicitacaoCadastro SET status = 'rejeitado' WHERE id = ?");
     $stmt->execute([$id]);
     
     echo json_encode([
         'success' => true,
-        'message' => 'Cadastro rejeitado com sucesso!'
+        'message' => 'Solicitação rejeitada com sucesso!'
     ]);
 } catch (PDOException $e) {
-    // Log de erro para depuração
     error_log('Erro em rejeitar-cadastro: ' . $e->getMessage());
     
     echo json_encode([

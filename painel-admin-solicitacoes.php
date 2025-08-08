@@ -44,14 +44,14 @@ $titulo_pagina = "Solicitações de Cadastro - SiLab";
         }
         
         .botao-acao {
-            padding: 5px 8px;
-            border-radius: 4px;
-            border: none;
-            cursor: pointer;
-            font-size: 12px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            gap: 5px;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
         }
         
         .botao-aprovar {
@@ -153,10 +153,10 @@ $titulo_pagina = "Solicitações de Cadastro - SiLab";
                             <td>${sol.email}</td>
                             <td>${sol.data_solicitacao_formatada || 'N/A'}</td>
                             <td class="acoes-cell">
-                                <button class="botao-acao botao-aprovar" onclick="aprovarCadastro(${sol.id})">
+                                <button class="botao-acao botao-aprovar" title="Aprovar cadastro" onclick="aprovarCadastro(${sol.id})">
                                     <i class="fas fa-check"></i>
                                 </button>
-                                <button class="botao-acao botao-rejeitar" onclick="rejeitarCadastro(${sol.id})">
+                                <button class="botao-acao botao-rejeitar" title="Rejeitar cadastro" onclick="rejeitarCadastro(${sol.id})">
                                     <i class="fas fa-times"></i>
                                 </button>
                             </td>
