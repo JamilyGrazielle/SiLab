@@ -25,6 +25,14 @@ try {
         $_SESSION['nome_completo'] = $usuario['nome_completo'];
         $_SESSION['matricula'] = $usuario['matricula'];
         $_SESSION['perfil'] = $usuario['perfil'];
+
+        if ($usuario['status'] !== 'aprovado') {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Seu cadastro ainda não foi aprovado pelo administrador.'
+            ]);
+            exit;
+        }        
         
         echo json_encode([
             'success' => true, 

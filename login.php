@@ -30,6 +30,11 @@
         <a href="painel-convidado.php">Entre como convidado</a>
       </div>
 
+    <div id="login-alternativo">
+        <a href="cadastro-professor.php">Cadastrar-se como professor</a>
+        <a href="painel-convidado.php">Entrar como convidado</a>
+    </div>
+
     </main>
 
     <div id="footer-login">

@@ -4,10 +4,10 @@ use silab;
 
 CREATE TABLE Usuario (
 	id INT AUTO_INCREMENT PRIMARY KEY,
-    matricula VARCHAR(20),
+    matricula VARCHAR(20) UNIQUE,
     nome_completo VARCHAR(70),
     senha VARCHAR(255),
-    status enum('ativo', 'inativo'),
+    status ENUM('pendente', 'aprovado', 'rejeitada') NOT NULL DEFAULT 'pendente',
     perfil ENUM('Professor', 'adm')
 );
 
@@ -72,5 +72,13 @@ CREATE TABLE Reserva (
     FOREIGN KEY (usuario_id) REFERENCES Usuario(id)
 );
 
-
+CREATE TABLE SolicitacaoCadastro (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome_completo VARCHAR(255) NOT NULL,
+    matricula VARCHAR(20) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL,
+    senha VARCHAR(255) NOT NULL,
+    data_solicitacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('pendente', 'aprovado', 'rejeitada') DEFAULT 'pendente'
+);
 
