@@ -4,21 +4,37 @@ require_once '../db_connect.php';
 
 header('Content-Type: application/json');
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id']) && $_SESSION['user_profile'] == 'adm') {
-    $data = json_decode(file_get_contents('php://input'), true);
+// Verificar se o usuário é admin
+if (!isset($_SESSION['perfil']) || $_SESSION['perfil'] !== 'adm') {
+    echo json_encode(['success' => false, 'message' => 'Acesso não autorizado']);
+    exit;
+}
+
+$data = json_decode(file_get_contents('php://input'), true);
+
+if (!$data) {
+    echo json_encode(['success' => false, 'message' => 'Dados inválidos']);
+    exit;
+}
+
+try {
+    // Validar dados obrigatórios
+    if (empty($data['id']) || empty($data['nome']) || empty($data['capacidade'])) {
+        throw new Exception('ID, nome e capacidade são obrigatórios');
+    }
+
+    $pdo->beginTransaction();
     
-    try {
-        $pdo->beginTransaction();
-        
-        // Atualizar laboratório
-        $stmt = $pdo->prepare("UPDATE Laboratorio SET nome = ?, capacidade = ? WHERE id = ?");
-        $stmt->execute([$data['nome'], $data['capacidade'], $data['id']]);
-        
-        // Remover equipamentos antigos
-        $stmt = $pdo->prepare("DELETE FROM Laboratorio_Equipamento WHERE laboratorio_id = ?");
-        $stmt->execute([$data['id']]);
-        
-        // Adicionar novos equipamentos
+    // Atualizar laboratório
+    $stmt = $pdo->prepare("UPDATE Laboratorio SET nome = ?, capacidade = ? WHERE id = ?");
+    $stmt->execute([$data['nome'], $data['capacidade'], $data['id']]);
+    
+    // Remover equipamentos antigos
+    $stmt = $pdo->prepare("DELETE FROM Laboratorio_Equipamento WHERE laboratorio_id = ?");
+    $stmt->execute([$data['id']]);
+    
+    // Adicionar novos equipamentos
+    if (!empty($data['equipamentos'])) {
         foreach ($data['equipamentos'] as $equip) {
             // Verificar se equipamento já existe
             $stmt = $pdo->prepare("SELECT id FROM Equipamento WHERE nome = ?");
@@ -35,14 +51,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id']) && $_SES
             $stmt = $pdo->prepare("INSERT INTO Laboratorio_Equipamento (laboratorio_id, equipamento_id, quantidade) VALUES (?, ?, ?)");
             $stmt->execute([$data['id'], $equip_id, $equip['quantidade']]);
         }
-        
-        $pdo->commit();
-        echo json_encode(['success' => true, 'message' => 'Laboratório atualizado com sucesso!']);
-    } catch (PDOException $e) {
-        $pdo->rollBack();
-        echo json_encode(['error' => true, 'message' => 'Erro ao atualizar laboratório: ' . $e->getMessage()]);
     }
-} else {
-    echo json_encode(['error' => true, 'message' => 'Acesso não autorizado']);
+    
+    $pdo->commit();
+    echo json_encode(['success' => true, 'message' => 'Laboratório atualizado com sucesso!']);
+} catch (Exception $e) {
+    $pdo->rollBack();
+    echo json_encode(['success' => false, 'message' => 'Erro: ' . $e->getMessage()]);
 }
 ?>
