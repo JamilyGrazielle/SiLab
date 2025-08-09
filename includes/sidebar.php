@@ -13,6 +13,20 @@ $is_active = basename($_SERVER['SCRIPT_NAME']);
         <p id="matricula-usuario">Matrícula: ...</p>
     </div>
 
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('php_action/session-info.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.nome_completo && data.matricula) {
+                    document.getElementById('nome-usuario').textContent = data.nome_completo;
+                    document.getElementById('matricula-usuario').textContent = "Matrícula: " + data.matricula;
+                }
+            })
+            .catch(error => console.error('Erro ao carregar sessão:', error));
+    });
+    </script>
+
     <hr class="separador">
 
     <nav class="navegacao-principal">
@@ -31,6 +45,9 @@ $is_active = basename($_SERVER['SCRIPT_NAME']);
                class="nav-link <?= ($is_active == 'painel-admin-solicitacoes.php') ? 'active' : '' ?>" 
                data-tooltip="Solicitações de Cadastro">
                 <i class="fas fa-user-plus"></i> <span>Solicitações</span>
+            </a>
+            <a href="painel-admin-usuarios.php" class="nav-link <?= ($is_active == 'painel-admin-usuarios.php') ? 'active' : '' ?>" data-tooltip="Gerenciar Usuários">
+                <i class="fas fa-users"></i> <span>Usuários</span>
             </a>
         <?php endif; ?>
         
