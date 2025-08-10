@@ -4,12 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="Estilo/estilo.css">
+    <script src="https://kit.fontawesome.com/0f27c66bcc.js" crossorigin="anonymous"></script>
     <title>Login - SiLab</title>
 </head>
 <body id="login">
 
-    <main id="principal02">
-      <img src="Imagens/logo.png" alt="Logo do SiLab">
+    <main id="principal-login">
+      <a href="index.php" class="logo-link">
+        <img src="Imagens/logo.png" alt="Logo SiLab" class="logo-imagem">
+      </a>
 
       <p>Digite sua matricula e senha.</p>
       <form id="form-login" method="POST" action="php_action/login.php">
@@ -18,28 +21,24 @@
         <input id="matricula" name="matricula" type="text" placeholder="Digite sua matrícula..." autofocus /> <br />
 
         <label for="senha"><strong>Senha</strong></label> <br />
-        <input id="senha" name="senha" type="password" placeholder="Digite sua senha..." /> <br />
-        <i class="fas fa-eye" id="toggleSenha"></i>
-
-        <div id="mensagem-erro" style="color: #E74C3C; font-weight: bold;"></div>
+        <div class="senha-mascara">
+         <input id="senha" name="senha" type="text" placeholder="Digite sua senha..." />
+         <i class="fas fa-eye" id="toggle-senha"></i>
+        </div>
+        
+        <div id="mensagem-erro"></div>
 
         <button type="submit"><strong>Entrar</strong></button>
+
+        <hr class="separador">
+
+        <div id="login-alternativo">
+         <a href="cadastro-professor.php">Cadastrar-se como professor</a>
+         <a href="painel-convidado.php">Entrar como convidado</a>
+        </div>
       </form>
 
-      <div id="login-alternativo">
-        <a href="painel-convidado.php">Entre como convidado</a>
-      </div>
-
-    <div id="login-alternativo">
-        <a href="cadastro-professor.php">Cadastrar-se como professor</a>
-        <a href="painel-convidado.php">Entrar como convidado</a>
-    </div>
-
     </main>
-
-    <div id="footer-login">
-      <?php require_once 'includes/footer.php';?>
-    </div>
     
     <script>
     document.getElementById('form-login').addEventListener('submit', async function (event) {
@@ -78,6 +77,25 @@
         } catch (error) {
             console.error('Erro:', error);
             mensagemErro.textContent = 'Erro de conexão. Tente novamente mais tarde.';
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const senhaInput = document.getElementById('senha');
+        const toggleIcon = document.getElementById('toggle-senha');
+
+        if (senhaInput && toggleIcon) {
+
+            toggleIcon.addEventListener('click', function() {
+                
+                const type = senhaInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                
+                senhaInput.setAttribute('type', type);
+                
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
         }
     });
     </script>

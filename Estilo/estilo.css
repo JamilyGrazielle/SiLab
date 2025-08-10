@@ -18,14 +18,6 @@ main {
   background-color: #f7f9fc;
 }
 
-#login {
-  background: linear-gradient(180deg, rgba(56, 161, 105, 1) 0%, rgba(76, 175, 80, 1) 50%, rgba(143, 235, 104, 1) 100%) no-repeat;
-  display: flex;
-  justify-content: center;
-  align-items: center; 
-  flex-direction: column;
-}
-
 header {
   height: 80px;
   display: flex;
@@ -50,7 +42,6 @@ header img {
   border-radius: 8px;
   background-color: #8FEB68;
   color: white;
-  text-decoration: none;
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -76,8 +67,11 @@ footer {
   justify-content: center;
 }
 
+/* --------------------------------- */
+/* PÁGINA INDEX.PHP (HOMEPAGE) */
+/* --------------------------------- */
 
-#slideshow_section {
+#slideshow-section {
   position: relative;
   max-width: 100%;
   margin: auto;
@@ -90,7 +84,7 @@ footer {
   object-fit: cover;
 }
 
-#slideshow_section button {
+#slideshow-section button {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -114,11 +108,11 @@ button.next {
   right: 20px;
 }
 
-#slideshow_section button:hover {
+#slideshow-section button:hover {
   background-color: rgb(224, 230, 237, 0.8);
 }
 
-.slide_caption {
+.slide-caption {
   position: absolute;
   top: 15%;
   left: 15%;
@@ -132,7 +126,7 @@ button.next {
   color: white;
 }
 
-.slide_caption h2 {
+.slide-caption h2 {
   font-size: 1.3em;
   font-weight: bold;
   border-bottom: 2px solid #C1FF72;
@@ -141,7 +135,7 @@ button.next {
   color: white;
 }
 
-.slide_caption p {
+.slide-caption p {
   font-size: 0.7em;
   font-weight: bold;
 }
@@ -167,7 +161,7 @@ button.next {
   color: #718096;
 }
 
-.conteudo_galeria {
+.conteudo-galeria {
   max-width: 300px;
   border: 4px solid #38A169;
   border-radius: 10px;
@@ -176,53 +170,89 @@ button.next {
 
 }
 
-.conteudo_galeria i {
+.conteudo-galeria i {
   font-size: 3em;
   color: #2D3748;
 }
 
-.conteudo_galeria:hover {
+.conteudo-galeria:hover {
   background-color: rgba(245, 245, 245, 0.836);
 }
 
+.botao-galeria {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 15px;
+  background-color: #38A169;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  border-bottom: 2px solid #8FEB68;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
 
-#principal02 {
-  width: 500px;
+.botao-galeria:hover {
+  background-color: #2d8555;
+  transform: translateY(-2px); 
+}
+
+.botao-galeria:focus {
+  box-shadow: 0 0 0 3px rgba(56, 161, 105, 0.5);
+  outline: none;
+}
+
+/* --------------------------------- */
+/* PÁGINA LOGIN.PHP */
+/* --------------------------------- */
+
+#login {
+  background: linear-gradient(180deg, rgba(56, 161, 105, 1) 0%, rgba(76, 175, 80, 1) 50%, rgba(143, 235, 104, 1) 100%) no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  min-height: 100vh;
+  padding: 2em;
+}
+
+#principal-login {
+  width: 90%;
+  max-width: 500px;
   background-color: #F7F9FC;
-  border-radius: 10px;
+  border-radius: 15px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-grow: 1;
-  margin-top: 5em;
+  flex-grow: 0;
 }
 
-#principal02 img {
+#principal-login img {
   width: 120px;
+  margin: 1em 0;
 }
 
-#principal02 p {
+#principal-login p {
   color: #718096;
   font-size: 0.8em;
   font-weight: bold;
   margin-top: 0;
 }
 
-#principal02 form {
+#principal-login form {
   padding: 0 2em;
   align-self: stretch;
 }
 
-#principal02 label {
+#principal-login label {
   color: #2D3748;
   font-size: 0.9em;
 }
 
-#principal02 input {
+#principal-login input {
   box-sizing: border-box;
   width: 100%;
-  margin: 0.5em 0 1.5em 0;
+  margin: 0.5em 0 1em 0;
   height: 3em;
   outline: none;
   border: 1px solid #ccc;
@@ -231,31 +261,67 @@ button.next {
   padding: 0 1em;
 }
 
-#principal02 input::placeholder {
+#principal-login input::placeholder {
   font-size: 15px;
   font-style: italic;
 }
 
-#principal02 input:focus {
-  border: 1px solid #4CAF50;
+#principal-login input:focus {
+  border: 2px solid #4CAF50;
   outline: none; 
 }
 
-#principal02 button {
+.senha-mascara {
+    position: relative; 
+    display: flex;
+    align-items: center;
+}
+
+#toggle-senha {
+  position: absolute; 
+  right: 15px;
+  cursor: pointer;
+  color: #2D3D5F;
+  height: 25px;
+}
+
+.senha-mascara input {
+  padding-right: 40px; 
+}
+
+#principal-login button {
   color: white;
   background-color: #38A169;
   border: none;
   border-radius: 5px;
   width: 100%;
-  margin: 1.5em 0 1.5em 0;
+  margin: 1.5em 0;
   height: 4em;
   font-size: 14px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-#principal02 button:hover {
-  background-color: rgb(56, 161, 105, 0.8);
+#principal-login button:hover {
+  background-color: rgba(56, 161, 105, 0.9);
+}
+
+#principal-login button:focus {
+  box-shadow: 0 0 0 3px rgba(56, 161, 105, 0.5);
+  outline: none;
+}
+
+#mensagem-erro {
+  color: #E74C3C; 
+  font-weight: bold;
+}
+
+#principal-login hr {
+  border: 0; 
+  height: 2px;
+  background-color: #219e5b;
+  width: 100%;
+  margin: 15px 0;
 }
 
 #login-alternativo a {
@@ -263,7 +329,8 @@ button.next {
   font-weight: bold;
   text-decoration: none; 
   transition: text-decoration 0.2s ease;
-  margin-bottom: 1.5em;
+  text-align: center;
+  margin-bottom: 15px ;
   display: block;
 }
 
@@ -272,8 +339,11 @@ button.next {
 }
 
 #footer-login {
+  position: absolute;
+  bottom: 10px;
+  color: white;
+  text-align: center;
   width: 100%;
-  margin-top: 5em;
 }
 
 
@@ -891,23 +961,6 @@ main.principal03 h1 {
   padding: 8px 15px;
   border-radius: 4px;
   cursor: pointer;
-}
-
-/* Estilo para o botão na galeria */
-.botao-galeria {
-  display: inline-block;
-  margin-top: 10px;
-  padding: 8px 15px;
-  background-color: #38A169;
-  color: white;
-  text-decoration: none;
-  border-radius: 5px;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-}
-
-.botao-galeria:hover {
-  background-color: #2d8555;
 }
 
 /* Botão de detalhes */

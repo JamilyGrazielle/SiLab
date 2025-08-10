@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="Estilo/estilo.css">
     <script src="https://kit.fontawesome.com/0f27c66bcc.js" crossorigin="anonymous"></script>
     <style>
-        #principal02 {
+        #principal-login {
             width: 500px;
             background-color: #F7F9FC;
             border-radius: 10px;
@@ -20,7 +20,7 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         
-        #principal02 h2 {
+        #principal-login h2 {
             color: #2D3748;
             margin-bottom: 15px;
         }
@@ -71,7 +71,7 @@
     </style>
 </head>
 <body id="login">
-    <main id="principal02">
+    <main id="principal-login">
         <img src="Imagens/logo.png" alt="Logo do SiLab" width="120">
         <h2>Cadastro de Professor</h2>
         <p>Preencha os dados abaixo para solicitar o cadastro.</p>
