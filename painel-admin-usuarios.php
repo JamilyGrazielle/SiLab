@@ -93,7 +93,6 @@ $titulo_pagina = "Gerenciar Usuários - SiLab";
                     <th>Nome</th>
                     <th>Status</th>
                     <th>Perfil</th>
-                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody id="tabela-corpo">
@@ -109,130 +108,189 @@ $titulo_pagina = "Gerenciar Usuários - SiLab";
     <?php require_once 'includes/footer.php'; ?>
     
     <script>
-        // Função para carregar usuários
-        async function carregarUsuarios(termo = '') {
-            const tbody = document.getElementById('tabela-corpo');
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;"><i class="fas fa-spinner loading"></i> Carregando...</td></tr>';
-            
+    // Escapa HTML para evitar XSS
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    async function carregarUsuarios(termo = '') {
+        const tbody = document.getElementById('tabela-corpo');
+        // Estado de carregando
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;"><i class="fas fa-spinner loading"></i> Carregando usuários...</td></tr>';
+
+        try {
+            const url = `php_action/listar-usuarios.php?pesquisa=${encodeURIComponent(termo)}`;
+            const resp = await fetch(url, { cache: 'no-store' });
+            const text = await resp.text();
+
+            // Tenta parsear JSON, senão mostra erro (útil pra ver HTML com <br>)
+            let result;
             try {
-                const url = termo 
-                    ? `php_action/listar-usuarios.php?pesquisa=${encodeURIComponent(termo)}`
-                    : 'php_action/listar-usuarios.php';
-                
-                const response = await fetch(url);
-                const usuarios = await response.json();
-                
-                if (usuarios.error) {
-                    throw new Error(usuarios.message || 'Erro ao carregar usuários');
-                }
-                
-                if (usuarios.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Nenhum usuário encontrado</td></tr>';
-                    return;
-                }
-                
-                let html = '';
-                usuarios.forEach(usuario => {
-                    html += `
-                        <tr>
-                            <td>${usuario.matricula}</td>
-                            <td>${usuario.nome_completo}</td>
-                            <td>${usuario.status}</td>
-                            <td>${usuario.perfil}</td>
-                            <td class="coluna-acoes">
-                                <button class="botao-perfil" 
-                                        onclick="alterarPerfil(${usuario.id}, '${usuario.perfil}')">
-                                    Alterar Perfil
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                });
-                
-                tbody.innerHTML = html;
-            } catch (error) {
-                console.error('Erro ao carregar usuários:', error);
-                tbody.innerHTML = `
+                result = JSON.parse(text);
+            } catch (err) {
+                console.error('Resposta inválida de listar-usuarios.php:', text);
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:red;">Erro no servidor — resposta inválida. Veja console (F12).</td></tr>`;
+                return;
+            }
+
+            if (!result.success || !Array.isArray(result.data)) {
+                console.error('listar-usuarios.php retornou erro:', result);
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:red;">Erro ao carregar usuários: ${escapeHtml(result.message || 'Resposta inesperada')}</td></tr>`;
+                return;
+            }
+
+            const usuarios = result.data;
+            if (usuarios.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Nenhum usuário encontrado</td></tr>';
+                return;
+            }
+
+            // Monta tabela com select de perfil
+            let html = '';
+            usuarios.forEach(user => {
+                const perfilAtual = (user.perfil || '').trim();
+                // opções: adm -> Administrador , Professor -> Professor
+                const options = [
+                    { val: 'adm', label: 'Administrador' },
+                    { val: 'Professor', label: 'Professor' }
+                ].map(o => `<option value="${o.val}" ${perfilAtual === o.val ? 'selected' : ''}>${escapeHtml(o.label)}</option>`).join('');
+
+                html += `
                     <tr>
-                        <td colspan="5" style="text-align: center; color: red;">
-                            Erro ao carregar usuários: ${error.message}
+                        <td>${escapeHtml(user.matricula)}</td>
+                        <td>${escapeHtml(user.nome_completo)}</td>
+                        <td>${escapeHtml(user.status)}</td>
+                        <td>
+                            <select class="select-perfil" data-id="${escapeHtml(user.id)}" data-prev="${escapeHtml(perfilAtual)}">
+                                ${options}
+                            </select>
                         </td>
                     </tr>
                 `;
-            }
+            });
+
+            tbody.innerHTML = html;
+
+            // Adiciona listeners aos selects
+            document.querySelectorAll('.select-perfil').forEach(select => {
+                select.addEventListener('change', async function () {
+    const id = this.dataset.id;
+    const novoPerfil = this.value;
+    const prevPerfil = this.dataset.prev || '';
+
+    // Solicita senha root
+    const senha = prompt("Digite a senha do usuário root para confirmar:");
+    if (!senha) {
+        this.value = prevPerfil;
+        return;
+    }
+
+    // Valida senha no servidor
+    try {
+        const resSenha = await fetch('php_action/verificar-root.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `senha=${encodeURIComponent(senha)}`
+        });
+
+        const txtSenha = await resSenha.text();
+        let dataSenha;
+        try {
+            dataSenha = JSON.parse(txtSenha);
+        } catch {
+            console.error("Resposta inválida de verificar-root.php:", txtSenha);
+            alert("Erro ao validar senha do root.");
+            this.value = prevPerfil;
+            return;
         }
 
-        // Função para alterar o perfil do usuário
-        async function alterarPerfil(id, perfilAtual) {
-            const novoPerfil = perfilAtual === 'adm' ? 'Professor' : 'adm';
-            
-            if (!confirm(`Tem certeza que deseja alterar o perfil para ${novoPerfil}?`)) {
-                return;
-            }
-            
-            try {
-                const response = await fetch('php_action/alterar-perfil.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ id, novoPerfil })
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    alert('Perfil alterado com sucesso!');
-                    // Recarregar a lista de usuários
-                    carregarUsuarios(document.getElementById('pesquisa').value);
-                } else {
-                    throw new Error(result.message || 'Erro ao alterar perfil');
-                }
-            } catch (error) {
-                alert('Erro: ' + error.message);
-            }
+        if (!dataSenha.success) {
+            alert(dataSenha.message || "Senha incorreta.");
+            this.value = prevPerfil;
+            return;
+        }
+    } catch (err) {
+        console.error("Erro na verificação da senha root:", err);
+        alert("Erro de comunicação com o servidor.");
+        this.value = prevPerfil;
+        return;
+    }
+
+    // Continua com a alteração de perfil
+    this.disabled = true;
+    try {
+        const res = await fetch('php_action/alterar-perfil.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `id=${encodeURIComponent(id)}&perfil=${encodeURIComponent(novoPerfil)}`
+        });
+
+        const txt = await res.text();
+        let data;
+        try {
+            data = JSON.parse(txt);
+        } catch (err) {
+            console.error('Resposta inválida de alterar-perfil.php:', txt);
+            alert('Erro inesperado ao salvar.');
+            this.value = prevPerfil;
+            return;
         }
 
-        // Quando o documento estiver carregado
-        document.addEventListener('DOMContentLoaded', function() {
-            // Carregar usuários inicialmente
-            carregarUsuarios();
-            
-            // Configurar o botão de pesquisa
-            document.getElementById('botao-pesquisar').addEventListener('click', function() {
-                const termo = document.getElementById('pesquisa').value;
+        if (!data.success) {
+            alert('Erro: ' + (data.message || 'Não foi possível atualizar o perfil.'));
+            this.value = prevPerfil;
+        } else {
+            this.dataset.prev = novoPerfil;
+            alert("Perfil alterado com sucesso.");
+        }
+    } catch (err) {
+        console.error('Falha na requisição alterar-perfil.php:', err);
+        alert('Erro de comunicação com o servidor.');
+        this.value = prevPerfil;
+    } finally {
+        this.disabled = false;
+    }
+});
+
+            });
+
+        } catch (error) {
+            console.error('Erro em carregarUsuarios:', error);
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:red;">Erro ao carregar usuários. Veja o console (F12).</td></tr>`;
+        }
+    }
+
+    // Conecta botão de pesquisa (se existir)
+    document.addEventListener('DOMContentLoaded', function () {
+        const botaoPesquisar = document.getElementById('botao-pesquisar');
+        const inputPesquisa = document.getElementById('pesquisa');
+
+        if (botaoPesquisar && inputPesquisa) {
+            botaoPesquisar.addEventListener('click', function (e) {
+                e.preventDefault();
+                const termo = inputPesquisa.value.trim();
                 carregarUsuarios(termo);
             });
-            
-            // Permitir pesquisa ao pressionar Enter
-            document.getElementById('pesquisa').addEventListener('keypress', function(e) {
+
+            // Enter no campo
+            inputPesquisa.addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') {
                     e.preventDefault();
-                    carregarUsuarios(this.value);
+                    carregarUsuarios(this.value.trim());
                 }
             });
-            
-            // Carregar informações do usuário no sidebar
-            fetch('php_action/session-info.php')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.nome_completo && data.matricula) {
-                        document.getElementById('nome-usuario').textContent = data.nome_completo;
-                        document.getElementById('matricula-usuario').textContent = "Matrícula: " + data.matricula;
-                    }
-                })
-                .catch(error => console.error('Erro ao carregar sessão:', error));
-            
-            // Configurar sidebar
-            const toggleButton = document.getElementById('menu-sidebar');
-            const sidebar = document.querySelector('.sidebar');
-            
-            if (toggleButton && sidebar) {
-                toggleButton.addEventListener('click', function() {
-                    sidebar.classList.toggle('recolhida');
-                });
-            }
-        });
+        }
+
+        // Carrega lista ao abrir a página
+        carregarUsuarios();
+    });
     </script>
+
 </body>
 </html>
