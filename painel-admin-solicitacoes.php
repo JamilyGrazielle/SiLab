@@ -16,6 +16,14 @@ $titulo_pagina = "Solicitações de Cadastro - SiLab";
     <link rel="stylesheet" href="Estilo/estilo.css">
     <script src="https://kit.fontawesome.com/0f27c66bcc.js" crossorigin="anonymous"></script>
     <style>
+        .principal03 {
+            margin-left: 250px;
+            padding: 20px;
+            transition: margin-left 0.3s;
+        }
+        .sidebar.recolhida + .principal03 {
+            margin-left: 80px;
+        }
         .tabela-solicitacoes {
             width: 100%;
             border-collapse: collapse;

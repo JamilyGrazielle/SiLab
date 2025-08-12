@@ -16,9 +16,14 @@ $titulo_pagina = "Gerenciar Usuários - SiLab";
     <link rel="stylesheet" href="Estilo/estilo.css">
     <script src="https://kit.fontawesome.com/0f27c66bcc.js" crossorigin="anonymous"></script>
     <style>
-        /* ... (mantenha os estilos existentes) ... */
-        
-        /* Adicione este novo estilo para a tabela */
+        .principal03 {
+            margin-left: 250px;
+            padding: 20px;
+            transition: margin-left 0.3s;
+        }
+        .sidebar.recolhida + .principal03 {
+            margin-left: 80px;
+        }
         .tabela-usuarios {
             width: 100%;
             border-collapse: collapse;

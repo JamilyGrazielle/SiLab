@@ -1,5 +1,15 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
+input[type="password"]::-ms-reveal {
+  display: none;
+}
+
+input[type="password"]::-webkit-reveal-password-button {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+
 body {
   min-height: 100vh;
   display: flex;
@@ -425,7 +435,7 @@ button.next {
 .separador {
   border: 0;
   border-top: 2px solid #F7F9FC; 
-  margin: 1.5em 0;
+  margin: 0.7em 0;
 }
 
 .nav-link {
@@ -462,7 +472,7 @@ button.next {
   background-color: #e74c3c; 
   border-color: #c0392b;
   color: #E0E6ED;
-  margin-top: 20px;
+  margin-top: auto;
   margin-bottom: 50px; 
 }
 
@@ -516,7 +526,7 @@ button.next {
 .sidebar.recolhida .nav-link::before {
   content: attr(data-tooltip); 
   position: absolute;          
-  left: 50px;                   
+  left: 65px;                   
   background-color: #2D3748;
   color: white;
   padding: 8px 12px;
@@ -532,7 +542,7 @@ button.next {
 .sidebar.recolhida .nav-link::after {
   content: '';
   position: absolute;
-  left: 40px; 
+  left: 55px; 
   border: 5px solid transparent;
   border-right-color: #2D3748;
   opacity: 0;

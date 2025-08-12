@@ -22,7 +22,7 @@
 
         <label for="senha"><strong>Senha</strong></label> <br />
         <div class="senha-mascara">
-         <input id="senha" name="senha" type="text" placeholder="Digite sua senha..." />
+         <input id="senha" name="senha" type="password" placeholder="Digite sua senha..." />
          <i class="fas fa-eye" id="toggle-senha"></i>
         </div>
         

@@ -17,7 +17,14 @@ $titulo_pagina = "Agenda Professor - SiLab";
     <link rel="stylesheet" href="Estilo/estilo.css">
     <script src="https://kit.fontawesome.com/0f27c66bcc.js" crossorigin="anonymous"></script>
     <style>
-        /* Mesmos estilos da agenda admin */
+        .principal03 {
+            margin-left: 250px;
+            padding: 20px;
+            transition: margin-left 0.3s;
+        }
+        .sidebar.recolhida + .principal03 {
+            margin-left: 80px;
+        }
         .agenda-container {
             overflow-x: auto;
             margin-top: 20px;
@@ -28,8 +35,6 @@ $titulo_pagina = "Agenda Professor - SiLab";
             border-collapse: collapse;
             min-width: 800px;
         }
-        
-        /* ... [outros estilos] ... */
     </style>
 </head>
 <body class="painel">

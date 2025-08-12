@@ -72,9 +72,14 @@
 </head>
 <body id="login">
     <main id="principal-login">
-        <img src="Imagens/logo.png" alt="Logo do SiLab" width="120">
+        <a href="index.php" class="logo-link">
+            <img src="Imagens/logo.png" alt="Logo SiLab" class="logo-imagem">
+        </a>
+
         <h2>Cadastro de Professor</h2>
+
         <p>Preencha os dados abaixo para solicitar o cadastro.</p>
+
         <form id="form-cadastro" method="POST">
             <div class="form-grupo">
                 <label for="nome">Nome Completo</label>
@@ -95,6 +100,8 @@
                 <label for="senha">Senha</label>
                 <input type="password" id="senha" name="senha" placeholder="Crie uma senha" required>
             </div>
+
+            
             
             <div class="form-grupo">
                 <label for="confirmar_senha">Confirme a Senha</label>
@@ -116,9 +123,9 @@
         </div>
     </main>
     
-    <div id="footer-login">
+    <!-- <div id="footer-login">
         <?php require_once 'includes/footer.php';?>
-    </div>
+    </div> -->
     
     <script>
         document.getElementById('form-cadastro').addEventListener('submit', async function (event) {

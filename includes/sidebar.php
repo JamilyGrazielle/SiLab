@@ -38,7 +38,7 @@ $is_active = basename($_SERVER['SCRIPT_NAME']);
             </a>
             <a href="painel-admin-cadastro.php" 
                class="nav-link <?= ($is_active == 'painel-admin-cadastro.php') ? 'active' : '' ?>" 
-               data-tooltip="Cadastro">
+               data-tooltip="Gerenciar Laboratórios">
                 <i class="fas fa-clipboard"></i> <span>Laboratórios</span>
             </a>
             <a href="painel-admin-solicitacoes.php" 
@@ -57,11 +57,11 @@ $is_active = basename($_SERVER['SCRIPT_NAME']);
                data-tooltip="Agenda Geral">
                 <i class="fas fa-calendar-alt"></i> <span>Agenda</span>
             </a>
-            <a href="painel-professor-reserva.php" 
+            <!-- <a href="painel-professor-reserva.php" 
                class="nav-link <?= ($is_active == 'painel-professor-reserva.php') ? 'active' : '' ?>" 
                data-tooltip="Reserva">
                 <i class="fas fa-bookmark"></i> <span>Reserva</span>
-            </a>
+            </a> -->
         <?php endif; ?>
     </nav>
 
