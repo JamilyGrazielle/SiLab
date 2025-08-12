@@ -91,7 +91,7 @@ $titulo_pagina = "Solicitações de Cadastro - SiLab";
     <main class="principal03">
         <h1>Solicitações de Cadastro</h1>
         
-        <table class="tabela-solicitacoes">
+        <table class="tabela-lab">
             <thead>
                 <tr>
                     <th>Nome</th>

@@ -164,19 +164,33 @@ if ($filtro_lab == 0) {
 <!-- Tabela de Agenda -->
 <div class="agenda-container">
     <table class="tabela-agenda">
-        <thead>
-            <tr>
-                <th>Horário</th>
-                <?php for ($i = 0; $i < 7; $i++): 
-                    $dia_class = date('N', $dias_semana[$i]) >= 6 ? 'fim-de-semana' : '';
-                    ?>
-                    <th class="<?= $dia_class ?>">
-                        <?= date('D', $dias_semana[$i]) ?><br>
-                        <small><?= date('d/m', $dias_semana[$i]) ?></small>
-                    </th>
-                <?php endfor; ?>
-            </tr>
-        </thead>
+    <thead>
+        <tr>
+            <th>Horário</th>
+            <?php 
+            $dias_pt = [
+                'Mon' => 'Seg',
+                'Tue' => 'Ter',
+                'Wed' => 'Qua',
+                'Thu' => 'Qui',
+                'Fri' => 'Sex',
+                'Sat' => 'Sáb',
+                'Sun' => 'Dom'
+            ];
+            
+            for ($i = 0; $i < 7; $i++): 
+                $dia_timestamp = $dias_semana[$i];
+                $dia_class = date('N', $dia_timestamp) >= 6 ? 'fim-de-semana' : '';
+                $dia_ingles = date('D', $dia_timestamp);
+                $dia_pt = $dias_pt[$dia_ingles] ?? $dia_ingles;
+            ?>
+                <th class="<?= $dia_class ?>">
+                    <?= $dia_pt ?><br>
+                    <small><?= date('d/m', $dia_timestamp) ?></small>
+                </th>
+            <?php endfor; ?>
+        </tr>
+    </thead>
         <tbody>
             <?php foreach ($turnos as $turno => $horario_turno): 
                 $hora_atual = $horario_turno['inicio'];

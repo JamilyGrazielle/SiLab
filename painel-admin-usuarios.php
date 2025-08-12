@@ -86,7 +86,7 @@ $titulo_pagina = "Gerenciar Usuários - SiLab";
             </form>
         </div>
         
-        <table class="tabela-usuarios">
+        <table class="tabela-lab">
             <thead>
                 <tr>
                     <th>Matrícula</th>
