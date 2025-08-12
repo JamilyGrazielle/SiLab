@@ -212,7 +212,7 @@
         }
         
         .botao-cancelar {
-            background-color: #f1f1f1;
+            background-color: #f44336;
         }
         
         .botao-salvar {
