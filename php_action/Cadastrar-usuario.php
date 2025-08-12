@@ -50,7 +50,7 @@ foreach ($usuarios as $usuario) {
               Senha: <code>$senha</code><br>";
 
     } catch (PDOException $e) {
-        echo "❌ Erro ao cadastrar <strong>{$usuario['nome']}</strong>: " . $e->getMessage() . "<br>";
+        echo "Erro ao cadastrar <strong>{$usuario['nome']}</strong>: " . $e->getMessage() . "<br>";
     }
 }
 ?>

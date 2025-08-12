@@ -24,7 +24,7 @@ $titulo_pagina = "Agenda Admin - SiLab";
         }
         
         .sidebar.recolhida + .principal03 {
-            margin-left: 10px;
+            margin-left: 80px;
         }
         .agenda-container {
             overflow-x: auto;
