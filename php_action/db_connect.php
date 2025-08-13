@@ -9,7 +9,7 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Verificar se a tabela Usuario está vazia e criar admin root
-    $stmt = $pdo->query("SELECT COUNT(*) AS total FROM Usuario");
+    $stmt = $pdo->query("SELECT COUNT(*) AS total FROM Usuario WHERE matricula = '20251DC0000' and perfil = 'adm'");
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($result['total'] == 0) {
