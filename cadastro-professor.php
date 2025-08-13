@@ -6,72 +6,9 @@
     <title>Cadastro de Professor - SiLab</title>
     <link rel="stylesheet" href="Estilo/estilo.css">
     <script src="https://kit.fontawesome.com/0f27c66bcc.js" crossorigin="anonymous"></script>
-    <style>
-        #principal-login {
-            width: 500px;
-            background-color: #F7F9FC;
-            border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            margin-top: 2em;
-            padding: 30px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        
-        #principal-login h2 {
-            color: #2D3748;
-            margin-bottom: 15px;
-        }
-        
-        .form-grupo {
-            width: 100%;
-            margin-bottom: 20px;
-        }
-        
-        .form-grupo label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #2D3748;
-        }
-        
-        .form-grupo input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-        
-        button[type="submit"] {
-            width: 100%;
-            padding: 12px;
-            background-color: #38A169;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        button[type="submit"]:hover {
-            background-color: #2d8555;
-        }
-        
-        #mensagem {
-            margin: 15px 0;
-            text-align: center;
-            font-weight: bold;
-        }
-    </style>
 </head>
-<body id="login">
-    <main id="principal-login">
+<body class="login">
+    <main class="principal-login">
         <a href="index.php" class="logo-link">
             <img src="Imagens/logo.png" alt="Logo SiLab" class="logo-imagem">
         </a>
@@ -81,34 +18,30 @@
         <p>Preencha os dados abaixo para solicitar o cadastro.</p>
 
         <form id="form-cadastro" method="POST">
-            <div class="form-grupo">
-                <label for="nome">Nome Completo</label>
-                <input type="text" id="nome" name="nome" placeholder="Seu nome completo" required>
-            </div>
-            
-            <div class="form-grupo">
-                <label for="matricula">Matrícula</label>
-                <input type="text" id="matricula" name="matricula" placeholder="Sua matrícula" required>
-            </div>
-            
-            <div class="form-grupo">
-                <label for="email">E-mail</label>
-                <input type="email" id="email" name="email" placeholder="Seu e-mail" required>
-            </div>
-            
-            <div class="form-grupo">
-                <label for="senha">Senha</label>
-                <input type="password" id="senha" name="senha" placeholder="Crie uma senha" required>
-            </div>
 
+            <label for="nome">Nome Completo</label>
+            <input type="text" id="nome" name="nome" placeholder="Digite seu nome completo..." required autofocus>
+
+            <label for="matricula">Matrícula</label>
+            <input type="text" id="matricula" name="matricula" placeholder="Digite sua matrícula..." required>
+
+            <label for="email">E-mail</label>
+            <input type="email" id="email" name="email" placeholder="Digite seu e-mail..." required>
             
-            
-            <div class="form-grupo">
-                <label for="confirmar_senha">Confirme a Senha</label>
-                <input type="password" id="confirmar_senha" name="confirmar_senha" placeholder="Repita a senha" required>
+            <label for="senha">Senha</label>
+            <div class="senha-mascara">
+                <input type="password" id="senha" name="senha" placeholder="Crie uma senha..." required>
+                <i class="fas fa-eye toggle-senha"></i>
             </div>
             
-            <div id="mensagem"></div>
+            <label for="confirmar_senha">Confirme a Senha</label>
+            <div class="senha-mascara">
+                <input type="password" id="confirmar_senha" name="confirmar_senha" placeholder="Repita a senha..." required>
+                <i class="fas fa-eye toggle-senha"></i>
+            </div>
+            
+            
+            <div id="mensagem-erro"></div>
             
             <button type="submit">
                 <span id="submit-text">Solicitar Cadastro</span>
@@ -116,16 +49,15 @@
                     <i class="fas fa-spinner fa-spin"></i> Enviando...
                 </span>
             </button>
+
+            <hr class="separador">
         </form>
         
-        <div id="login-alternativo" style="margin-top: 20px; text-align: center;">
+        
+        <div class="login-alternativo">
             <a href="login.php">Voltar para o login</a>
         </div>
     </main>
-    
-    <!-- <div id="footer-login">
-        <?php require_once 'includes/footer.php';?>
-    </div> -->
     
     <script>
         document.getElementById('form-cadastro').addEventListener('submit', async function (event) {
@@ -136,7 +68,7 @@
             const email = document.getElementById('email').value;
             const senha = document.getElementById('senha').value;
             const confirmarSenha = document.getElementById('confirmar_senha').value;
-            const mensagem = document.getElementById('mensagem');
+            const mensagem = document.getElementById('mensagem-erro');
             const submitText = document.getElementById('submit-text');
             const submitLoading = document.getElementById('submit-loading');
             
@@ -147,7 +79,7 @@
             // Validar senhas
             if (senha !== confirmarSenha) {
                 mensagem.innerHTML = 'As senhas não coincidem!';
-                mensagem.style.color = 'red';
+                mensagem.style.color = '#E74C3C';
                 return;
             }
             
@@ -171,7 +103,7 @@
                 
                 if (result.success) {
                     mensagem.innerHTML = result.message;
-                    mensagem.style.color = 'green';
+                    mensagem.style.color = '#4CAF50';
                     
                     // Limpar formulário após sucesso
                     document.getElementById('form-cadastro').reset();
@@ -182,17 +114,36 @@
                     }, 3000);
                 } else {
                     mensagem.innerHTML = result.message;
-                    mensagem.style.color = 'red';
+                    mensagem.style.color = '#E74C3C';
                 }
             } catch (error) {
                 mensagem.innerHTML = 'Erro ao enviar solicitação. Tente novamente mais tarde.';
-                mensagem.style.color = 'red';
+                mensagem.style.color = '#E74C3C';
                 console.error('Erro:', error);
             } finally {
                 // Restaurar botão
                 submitText.style.display = 'inline';
                 submitLoading.style.display = 'none';
             }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const toggleIcons = document.querySelectorAll('.toggle-senha');
+
+            toggleIcons.forEach(icon => {
+    
+                icon.addEventListener('click', function() {
+    
+                const senhaInput = this.previousElementSibling;
+                const type = senhaInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                senhaInput.setAttribute('type', type);
+        
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+
+                });
+            });
         });
     </script>
 </body>

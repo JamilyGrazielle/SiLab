@@ -213,10 +213,10 @@ button.next {
 }
 
 /* --------------------------------- */
-/* PÁGINA LOGIN.PHP */
+/* PÁGINA LOGIN.PHP e PÁGINA CADASTRO-PROFESSOR.PHP */
 /* --------------------------------- */
 
-#login {
+.login {
   background: linear-gradient(180deg, rgba(56, 161, 105, 1) 0%, rgba(76, 175, 80, 1) 50%, rgba(143, 235, 104, 1) 100%) no-repeat;
   display: flex;
   justify-content: center;
@@ -225,7 +225,7 @@ button.next {
   padding: 2em;
 }
 
-#principal-login {
+.principal-login {
   width: 90%;
   max-width: 500px;
   background-color: #F7F9FC;
@@ -237,29 +237,36 @@ button.next {
   flex-grow: 0;
 }
 
-#principal-login img {
+.principal-login img {
   width: 120px;
   margin: 1em 0;
 }
 
-#principal-login p {
+.principal-login h2 {
+  color: #2D3748;
+  margin: 0 0 15px 0; 
+  font-weight: 900;
+}
+
+.principal-login p {
   color: #718096;
   font-size: 0.8em;
   font-weight: bold;
   margin-top: 0;
 }
 
-#principal-login form {
+.principal-login form {
   padding: 0 2em;
   align-self: stretch;
 }
 
-#principal-login label {
+.principal-login label {
   color: #2D3748;
   font-size: 0.9em;
+  font-weight: 700;
 }
 
-#principal-login input {
+.principal-login input {
   box-sizing: border-box;
   width: 100%;
   margin: 0.5em 0 1em 0;
@@ -271,23 +278,22 @@ button.next {
   padding: 0 1em;
 }
 
-#principal-login input::placeholder {
+.principal-login input::placeholder {
   font-size: 15px;
   font-style: italic;
 }
 
-#principal-login input:focus {
+.principal-login input:focus {
   border: 2px solid #4CAF50;
   outline: none; 
 }
 
 .senha-mascara {
-    position: relative; 
-    display: flex;
-    align-items: center;
+  position: relative; 
+  display: flex;
+  align-items: center;
 }
-
-#toggle-senha {
+.toggle-senha {
   position: absolute; 
   right: 15px;
   cursor: pointer;
@@ -299,7 +305,7 @@ button.next {
   padding-right: 40px; 
 }
 
-#principal-login button {
+.principal-login button {
   color: white;
   background-color: #38A169;
   border: none;
@@ -308,15 +314,17 @@ button.next {
   margin: 1.5em 0;
   height: 4em;
   font-size: 14px;
+  font-weight: bold;
   cursor: pointer;
+  
   transition: background-color 0.3s ease;
 }
 
-#principal-login button:hover {
+.principal-login button:hover {
   background-color: rgba(56, 161, 105, 0.9);
 }
 
-#principal-login button:focus {
+.principal-login button:focus {
   box-shadow: 0 0 0 3px rgba(56, 161, 105, 0.5);
   outline: none;
 }
@@ -326,7 +334,7 @@ button.next {
   font-weight: bold;
 }
 
-#principal-login hr {
+.principal-login hr {
   border: 0; 
   height: 2px;
   background-color: #219e5b;
@@ -334,7 +342,7 @@ button.next {
   margin: 15px 0;
 }
 
-#login-alternativo a {
+.login-alternativo a {
   color: #4CAF50; 
   font-weight: bold;
   text-decoration: none; 
@@ -344,17 +352,13 @@ button.next {
   display: block;
 }
 
-#login-alternativo a:hover {
+.login-alternativo a:hover {
   text-decoration: underline;
 }
 
-#footer-login {
-  position: absolute;
-  bottom: 10px;
-  color: white;
-  text-align: center;
-  width: 100%;
-}
+/* --------------------------------- */
+/* PÁGINA */
+/* --------------------------------- */
 
 
 .painel header,
