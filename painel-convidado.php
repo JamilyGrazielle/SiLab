@@ -24,8 +24,10 @@ $titulo_pagina = "Agenda Pública - SiLab";
     </style>
 </head>
 <body>
-    <?php require_once 'includes/header-principal.php'; ?>
-
+    <a href="index.php" class="logo-link">
+        <?php require_once 'includes/header-principal.php'; ?>
+    </a>
+   
     <main>
         <h1 style="text-align: center;">Agenda de Laboratórios</h1>
         <?php include 'agenda.php'; ?>

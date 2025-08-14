@@ -109,11 +109,38 @@ $titulo_pagina = "Solicitações de Cadastro - SiLab";
                 </tr>
             </tbody>
         </table>
+        <div id="paginacao-container"></div>
     </main>
 
     <?php require_once 'includes/footer.php'; ?>
 
     <script>
+        function renderizarPaginacao(paginationInfo) {
+            const { currentPage, totalPages } = paginationInfo;
+            const container = document.getElementById("paginacao-container");
+            container.innerHTML = ''; 
+
+            if (totalPages <= 1) return;
+
+            let paginationHTML = '<nav class="paginacao"><ul>';
+
+            if (currentPage > 1) {
+                paginationHTML += `<li class="pagina-item"><a href="#" onclick="event.preventDefault(); carregarSolicitacoes(${currentPage - 1})">Anterior</a></li>`;
+            }
+
+            for (let i = 1; i <= totalPages; i++) {
+                const activeClass = (i === currentPage) ? 'ativo' : '';
+                paginationHTML += `<li class="pagina-item ${activeClass}"><a href="#" onclick="event.preventDefault(); carregarSolicitacoes(${i})">${i}</a></li>`;
+            }
+
+            if (currentPage < totalPages) {
+                paginationHTML += `<li class="pagina-item"><a href="#" onclick="event.preventDefault(); carregarSolicitacoes(${currentPage + 1})">Próximo</a></li>`;
+            }
+
+            paginationHTML += '</ul></nav>';
+            container.innerHTML = paginationHTML;
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             // Carregar informações do usuário
             fetch('php_action/session-info.php')
@@ -139,43 +166,58 @@ $titulo_pagina = "Solicitações de Cadastro - SiLab";
             }
         });
         
-        async function carregarSolicitacoes() {
+        async function carregarSolicitacoes(pagina = 1) {
             const tbody = document.getElementById('tabela-corpo');
+            const paginacaoContainer = document.getElementById('paginacao-container');
+            
+            if(paginacaoContainer) paginacaoContainer.innerHTML = ''; 
             tbody.innerHTML = '<tr><td colspan="5" class="loading-container"><i class="fas fa-spinner fa-spin"></i> Carregando...</td></tr>';
             
             try {
-                const response = await fetch('php_action/listar-solicitacoes.php');
-                const solicitacoes = await response.json();
+                const url = `php_action/listar-solicitacoes.php?page=${pagina}`;
+                const response = await fetch(url);
                 
-                if (!solicitacoes || solicitacoes.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">Nenhuma solicitação pendente</td></tr>';
-                    return;
+                const result = await response.json(); 
+                
+                if (result.success) {
+                    const solicitacoes = result.data; 
+                    
+                    if (solicitacoes.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">Nenhuma solicitação pendente</td></tr>';
+                        return;
+                    }
+                    
+                    let html = '';
+                    solicitacoes.forEach(sol => {
+                        html += `
+                            <tr>
+                                <td>${sol.nome_completo}</td>
+                                <td>${sol.matricula}</td>
+                                <td>${sol.email}</td>
+                                <td>${sol.data_solicitacao_formatada || 'N/A'}</td>
+                                <td class="acoes-cell">
+                                    <button class="botao-acao botao-aprovar" title="Aprovar" onclick="aprovarCadastro(${sol.id})">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                    <button class="botao-acao botao-rejeitar" title="Rejeitar" onclick="rejeitarCadastro(${sol.id})">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    
+                    tbody.innerHTML = html;
+                    
+                    renderizarPaginacao(result.pagination);
+
+                } else {
+                    throw new Error(result.message || 'Erro ao carregar solicitações');
                 }
-                
-                let html = '';
-                solicitacoes.forEach(sol => {
-                    html += `
-                        <tr>
-                            <td>${sol.nome_completo}</td>
-                            <td>${sol.matricula}</td>
-                            <td>${sol.email}</td>
-                            <td>${sol.data_solicitacao_formatada || 'N/A'}</td>
-                            <td class="acoes-cell">
-                                <button class="botao-acao botao-aprovar" title="Aprovar cadastro" onclick="aprovarCadastro(${sol.id})">
-                                    <i class="fas fa-check"></i>
-                                </button>
-                                <button class="botao-acao botao-rejeitar" title="Rejeitar cadastro" onclick="rejeitarCadastro(${sol.id})">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                });
-                
-                tbody.innerHTML = html;
+
             } catch (error) {
                 console.error('Erro ao carregar solicitações:', error);
-                tbody.innerHTML = '<tr><td colspan="5" class="error-container"><i class="fas fa-exclamation-triangle"></i> Erro ao carregar solicitações</td></tr>';
+                tbody.innerHTML = `<tr><td colspan="5" class="error-container"><i class="fas fa-exclamation-triangle"></i> Erro: ${error.message}</td></tr>`;
             }
         }
         

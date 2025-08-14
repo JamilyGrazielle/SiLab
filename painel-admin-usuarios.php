@@ -64,6 +64,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['perfil'] !== 'adm') {
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#039;');
+    
         }
 
         function renderizarPaginacao(paginationInfo) {
@@ -119,12 +120,14 @@ if (!isset($_SESSION['user_id']) || $_SESSION['perfil'] !== 'adm') {
                 }
 
                 const usuarios = result.data;
+
                 if (usuarios.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Nenhum usuário encontrado</td></tr>';
                     return;
                 }
 
-                // Monta tabela com select de perfil
+                renderizarPaginacao(result.pagination);
+
                 let html = '';
                 usuarios.forEach(user => {
                     const perfilAtual = (user.perfil || '').trim();

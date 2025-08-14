@@ -1120,6 +1120,10 @@ main.principal03 h1 {
   gap: 5px;
 }
 
+/* --------------------------------- */
+/* PAGINAÇÃO*/
+/* --------------------------------- */
+
 .paginacao {
   margin-top: 2em;
   display: flex;
@@ -1129,7 +1133,6 @@ main.principal03 h1 {
   list-style: none;
   padding: 0;
   display: flex;
-  gap: 5px;
   border: 1px solid #ddd;
   border-radius: 6px;
   overflow: hidden;
