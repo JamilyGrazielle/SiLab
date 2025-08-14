@@ -20,8 +20,7 @@ $titulo_pagina = "Agenda Pública - SiLab";
             width: 100%;
             border-collapse: collapse;
         }
-        
-        /* ... [outros estilos] ... */
+
     </style>
 </head>
 <body>
