@@ -1,8 +1,8 @@
 <?php
 $host = 'localhost';
 $dbname = 'silab';
-$username = 'root'; // altere conforme necessário
-$password = '';     // altere conforme necessário
+$username = 'root';
+$password = '';    
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
